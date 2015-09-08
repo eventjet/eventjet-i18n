@@ -2,7 +2,7 @@
 
 namespace Eventjet\I18n;
 
-interface LanguageMapInterface
+interface LanguagePriorityInterface
 {
     /**
      * @return string[]
