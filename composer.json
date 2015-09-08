@@ -1,5 +1,10 @@
 {
     "require": {
         "psr/http-message": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eventjet\\I18n\\": "src"
+        }
     }
 }
