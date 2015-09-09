@@ -2,6 +2,8 @@
 
 namespace Eventjet\I18n;
 
+use Eventjet\I18n\Exception\InvalidLanguageFormatException;
+
 class LanguageMap implements LanguageMapInterface
 {
     /**
@@ -14,6 +16,17 @@ class LanguageMap implements LanguageMapInterface
      */
     public function __construct(array $map)
     {
+        foreach ($map as $key => $value) {
+            LanguageFormatValidator::isValid($key);
+        }
         $this->map = $map;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAll()
+    {
+        return $this->map;
     }
 }

@@ -29,7 +29,7 @@ class LanguageExtractorTest extends PHPUnit_Framework_TestCase
             [['de' => 'Deutsch'], ['de'], 'Deutsch'],
             [['de' => 'Deutsch', 'en' => 'English'], ['en', 'de'], 'English'],
             [['de' => 'Deutsch'], ['en'], 'Deutsch'],
-            [['de' => 'Deutsch'], ['de-AT'], 'Deutsch'],
+            [['es' => 'Espanol', 'de' => 'Deutsch'], ['de-AT'], 'Deutsch'],
             [['de' => 'Deutsch', 'en' => 'English'], ['es'], 'English'],
             [['de' => 'Deutsch'], ['es'], 'Deutsch'],
         ];
