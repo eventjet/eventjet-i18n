@@ -2,6 +2,7 @@
 
 namespace Eventjet\I18nTest;
 
+use Eventjet\I18n\Exception\InvalidLanguageFormatException;
 use Eventjet\I18n\LanguageMap;
 use PHPUnit_Framework_TestCase;
 
@@ -35,7 +36,7 @@ class LanguageMapTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateInvalidMap(array $mapData)
     {
-        $this->setExpectedException('Eventjet\I18n\Exception\InvalidLanguageFormatException');
+        $this->setExpectedException(InvalidLanguageFormatException::class);
         new LanguageMap($mapData);
     }
 
