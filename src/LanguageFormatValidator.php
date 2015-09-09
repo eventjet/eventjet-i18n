@@ -2,42 +2,94 @@
 
 namespace Eventjet\I18n;
 
-use Eventjet\I18n\Exception\InvalidLanguageFormatException;
-
+/**
+ * checks a language key if it is syntactically correct
+ *
+ * Class LanguageFormatValidator
+ * @package Eventjet\I18n
+ */
 class LanguageFormatValidator
 {
+    /**
+     * @var bool
+     */
+    private static $valid;
+
+    /**
+     * @var string|null
+     */
+    private static $error;
+
+    /**
+     * @param $key
+     * @return bool
+     */
     public static function isValid($key)
     {
+        static::$valid = true;
+        static::$error = null;
+
         static::checkHyphen($key);
         static::checkShortFormat($key);
         static::checkLongFormat($key);
+
+        return static::$valid;
     }
 
+    /**
+     * @return null|string
+     */
+    public static function getError()
+    {
+        return static::$error;
+    }
+
+    /**
+     * @param $key
+     * @return bool
+     */
     private static function checkHyphen($key)
     {
         if (strlen($key) > 2 && strpos($key, '-') === false) {
-            throw new InvalidLanguageFormatException('The language-country separator has to be a hyphen.');
+            static::$valid = false;
+            static::$error = 'The language-country separator has to be a hyphen.';
+            return false;
         }
+        return true;
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     private static function checkShortFormat($key)
     {
         if (!static::isLongFormat($key) && !preg_match('([a-z]{2})', $key)) {
-            throw new InvalidLanguageFormatException(
-                sprintf('"%s" is an invalid short format. It is case sensitive like "de"', $key)
-            );
+            static::$valid = false;
+            static::$error = sprintf('"%s" is an invalid short format. It is case sensitive, e.g. "de"', $key);
+            return false;
         }
+        return true;
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     private static function checkLongFormat($key)
     {
         if (static::isLongFormat($key) && !preg_match('([a-z]{2}-[A-Z]{2})', $key)) {
-            throw new InvalidLanguageFormatException(
-                sprintf('"%s" is an invalid long format. It is case sensitive like "de-DE"', $key)
-            );
+            static::$error = sprintf('"%s" is an invalid long format. It is case sensitive, e.g. "de-DE"', $key);
+            static::$valid = false;
+            return false;
         }
+        return true;
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     private static function isLongFormat($key)
     {
         if (strlen($key) > 2 && strpos($key, '-') !== false) {

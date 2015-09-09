@@ -13,7 +13,7 @@ class LanguageMapTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateValidMap(array $mapData)
     {
-        $this->assertInstanceOf('Eventjet\I18n\LanguageMap', new LanguageMap($mapData));
+        $this->assertInstanceOf(LanguageMap::class, new LanguageMap($mapData));
     }
 
     public function validData()

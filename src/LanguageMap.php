@@ -17,7 +17,10 @@ class LanguageMap implements LanguageMapInterface
     public function __construct(array $map)
     {
         foreach ($map as $key => $value) {
-            LanguageFormatValidator::isValid($key);
+            $valid = LanguageFormatValidator::isValid($key);
+            if (!$valid) {
+                throw new InvalidLanguageFormatException(LanguageFormatValidator::getError());
+            }
         }
         $this->map = $map;
     }
