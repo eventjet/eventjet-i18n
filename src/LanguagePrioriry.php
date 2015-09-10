@@ -5,14 +5,14 @@ namespace Eventjet\I18n;
 class LanguagePrioriry implements LanguagePriorityInterface
 {
     /**
-     * @var string[]
+     * @var Language[]
      */
     private $languages;
 
     /**
      * LanguagePrioriry constructor.
      *
-     * @param string[] $languages
+     * @param Language[] $languages
      */
     public function __construct(array $languages)
     {
@@ -20,10 +20,37 @@ class LanguagePrioriry implements LanguagePriorityInterface
     }
 
     /**
-     * @return string[]
+     * @return Language[]
      */
     public function getAll()
     {
         return $this->languages;
+    }
+
+    public function current()
+    {
+        return current($this->languages);
+    }
+
+    public function next()
+    {
+        return next($this->languages);
+    }
+
+    public function key()
+    {
+        return key($this->languages);
+    }
+
+    public function valid()
+    {
+        $key = key($this->languages);
+        return ($key !== null && $key !== false);
+
+    }
+
+    public function rewind()
+    {
+        reset($this->languages);
     }
 }

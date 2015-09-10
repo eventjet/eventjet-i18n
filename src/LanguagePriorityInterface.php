@@ -2,10 +2,12 @@
 
 namespace Eventjet\I18n;
 
-interface LanguagePriorityInterface
+use Iterator;
+
+interface LanguagePriorityInterface extends Iterator
 {
     /**
-     * @return string[]
+     * @return Language[]
      */
     public function getAll();
 }
