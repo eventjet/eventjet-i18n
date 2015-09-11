@@ -7,7 +7,7 @@ use SplObjectStorage;
 class TranslationMap implements TranslationMapInterface
 {
     /**
-     * @var Translation[]
+     * @var Translation[]|SplObjectStorage
      */
     private $translations;
 
