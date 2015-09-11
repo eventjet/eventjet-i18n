@@ -1,7 +1,17 @@
 {
-    "require": {
-        "psr/http-message": "^1.0"
-    },
+    "name": "eventjet/i18n",
+    "description": "Library to handle Internationalization and language mappings",
+    "authors": [
+        {
+            "name": "Rudolph Gottesheim",
+            "email": "r.gottesheim@loot.at"
+        },
+        {
+            "name": "Thomas Rieschl",
+            "email": "thomas.rieschl@eventjet.at"
+        }
+    ],
+    "license": "MIT",
     "require-dev": {
         "phpunit/phpunit": "^4.8.6"
     },
