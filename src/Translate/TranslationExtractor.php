@@ -15,6 +15,17 @@ class TranslationExtractor implements TranslationExtractorInterface
      */
     public function extract(TranslationMapInterface $map, LanguagePriorityInterface $priorities)
     {
+        $string = $this->extractFromPriority($map, $priorities);
+        return null !== $string ? $string : $this->extractFromFallbacks($map);
+    }
+
+    /**
+     * @param TranslationMapInterface   $map
+     * @param LanguagePriorityInterface $priorities
+     * @return null|string
+     */
+    private function extractFromPriority(TranslationMapInterface $map, LanguagePriorityInterface $priorities)
+    {
         foreach ($priorities as $language) {
             /** @var LanguageInterface $language */
             if ($map->has($language)) {
@@ -27,6 +38,15 @@ class TranslationExtractor implements TranslationExtractorInterface
                 }
             }
         }
+        return null;
+    }
+
+    /**
+     * @param TranslationMapInterface $map
+     * @return string
+     */
+    private function extractFromFallbacks(TranslationMapInterface $map)
+    {
         $english = Language::get('en');
         if ($map->has($english)) {
             return $map->get($english);
