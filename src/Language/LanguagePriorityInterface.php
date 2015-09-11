@@ -1,13 +1,13 @@
 <?php
 
-namespace Eventjet\I18n;
+namespace Eventjet\I18n\Language;
 
 use Iterator;
 
 interface LanguagePriorityInterface extends Iterator
 {
     /**
-     * @return Language[]
+     * @return LanguageInterface[]
      */
     public function getAll();
 }

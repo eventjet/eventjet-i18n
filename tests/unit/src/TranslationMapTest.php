@@ -2,7 +2,7 @@
 
 namespace EventjetTest\I18n;
 
-use Eventjet\I18n\Language;
+use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translation;
 use Eventjet\I18n\TranslationMap;
 use PHPUnit_Framework_TestCase;

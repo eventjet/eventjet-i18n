@@ -1,18 +1,18 @@
 <?php
 
-namespace Eventjet\I18n;
+namespace Eventjet\I18n\Language;
 
 class LanguagePrioriry implements LanguagePriorityInterface
 {
     /**
-     * @var Language[]
+     * @var LanguageInterface[]
      */
     private $languages;
 
     /**
      * LanguagePrioriry constructor.
      *
-     * @param Language[] $languages
+     * @param LanguageInterface[] $languages
      */
     public function __construct(array $languages)
     {
@@ -20,7 +20,7 @@ class LanguagePrioriry implements LanguagePriorityInterface
     }
 
     /**
-     * @return Language[]
+     * @return LanguageInterface[]
      */
     public function getAll()
     {

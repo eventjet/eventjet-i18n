@@ -2,9 +2,9 @@
 
 namespace EventjetTest\I18n;
 
-use Eventjet\I18n\Language;
-use Eventjet\I18n\LanguagePrioriry;
-use Eventjet\I18n\LanguagePriorityInterface;
+use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Language\LanguagePrioriry;
+use Eventjet\I18n\Language\LanguagePriorityInterface;
 use Eventjet\I18n\Translation;
 use Eventjet\I18n\TranslationExtractor;
 use Eventjet\I18n\TranslationMap;

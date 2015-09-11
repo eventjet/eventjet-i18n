@@ -1,10 +1,10 @@
 <?php
 
-namespace Eventjet\I18n;
+namespace Eventjet\I18n\Language;
 
 use Eventjet\I18n\Exception\InvalidLanguageFormatException;
 
-class Language
+class Language implements LanguageInterface
 {
     /** @var Language[] */
     private static $pool = [];

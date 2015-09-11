@@ -2,8 +2,8 @@
 
 namespace EventjetTest\I18n;
 
-use Eventjet\I18n\Language;
-use Eventjet\I18n\LanguagePrioriry;
+use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Language\LanguagePrioriry;
 use PHPUnit_Framework_TestCase;
 
 /**
