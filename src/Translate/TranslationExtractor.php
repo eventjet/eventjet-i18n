@@ -1,6 +1,6 @@
 <?php
 
-namespace Eventjet\I18n;
+namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
