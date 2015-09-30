@@ -2,13 +2,13 @@
 
 namespace EventjetTest\I18n;
 
-use Eventjet\I18n\Language;
-use Eventjet\I18n\LanguagePrioriry;
-use Eventjet\I18n\LanguagePriorityInterface;
-use Eventjet\I18n\Translation;
-use Eventjet\I18n\TranslationExtractor;
-use Eventjet\I18n\TranslationMap;
-use Eventjet\I18n\TranslationMapInterface;
+use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Language\LanguagePrioriry;
+use Eventjet\I18n\Language\LanguagePriorityInterface;
+use Eventjet\I18n\Translate\Translation;
+use Eventjet\I18n\Translate\TranslationExtractor;
+use Eventjet\I18n\Translate\TranslationMap;
+use Eventjet\I18n\Translate\TranslationMapInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
@@ -19,9 +19,9 @@ class TranslationExtractorTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider extractData
-     * @param TranslationMapInterface   $map
-     * @param LanguagePriorityInterface $priority
-     * @param string                    $expectedReturn
+     * @param \Eventjet\I18n\Translate\TranslationMapInterface $map
+     * @param LanguagePriorityInterface                        $priority
+     * @param string                                           $expectedReturn
      */
     public function testExtract(TranslationMapInterface $map, LanguagePriorityInterface $priority, $expectedReturn)
     {
@@ -50,7 +50,7 @@ class TranslationExtractorTest extends PHPUnit_Framework_TestCase
 
     /**
      * @param array $mapData
-     * @return PHPUnit_Framework_MockObject_MockObject|TranslationMap
+     * @return PHPUnit_Framework_MockObject_MockObject|\Eventjet\I18n\Translate\TranslationMap
      */
     private function createTranslationMap(array $mapData)
     {

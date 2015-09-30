@@ -1,7 +1,8 @@
 <?php
 
-namespace Eventjet\I18n;
+namespace Eventjet\I18n\Translate;
 
+use Eventjet\I18n\Language\LanguageInterface;
 use SplObjectStorage;
 
 class TranslationMap implements TranslationMapInterface
@@ -23,19 +24,19 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @param Language $language
+     * @param LanguageInterface $language
      * @return bool
      */
-    public function has(Language $language)
+    public function has(LanguageInterface $language)
     {
         return $this->translations->offsetExists($language);
     }
 
     /**
-     * @param Language $language
+     * @param LanguageInterface $language
      * @return string
      */
-    public function get(Language $language)
+    public function get(LanguageInterface $language)
     {
         return $this->translations->offsetGet($language);
     }

@@ -1,12 +1,13 @@
 <?php
 
-namespace Eventjet\I18n;
+namespace Eventjet\I18n\Translate;
 
+use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
 
 class Translation implements TranslationInterface
 {
-    /** @var Language */
+    /** @var LanguageInterface */
     private $language;
     /** @var string */
     private $text;
@@ -14,10 +15,10 @@ class Translation implements TranslationInterface
     /**
      * Translation constructor.
      *
-     * @param Language $language
-     * @param string   $string
+     * @param LanguageInterface $language
+     * @param string            $string
      */
-    public function __construct(Language $language, $string)
+    public function __construct(LanguageInterface $language, $string)
     {
         if (!is_string($string)) {
             throw new InvalidArgumentException(sprintf(
@@ -31,7 +32,7 @@ class Translation implements TranslationInterface
     }
 
     /**
-     * @return Language
+     * @return LanguageInterface
      */
     public function getLanguage()
     {
