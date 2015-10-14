@@ -13,4 +13,9 @@ interface LanguageInterface
      * @return LanguageInterface
      */
     public function getBaseLanguage();
+
+    /**
+     * @return string
+     */
+    public function __toString();
 }
