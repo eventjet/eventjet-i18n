@@ -63,4 +63,12 @@ class Language implements LanguageInterface
         }
         return self::$pool[$language];
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->language;
+    }
 }

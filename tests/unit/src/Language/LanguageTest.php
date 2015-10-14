@@ -40,4 +40,11 @@ class LanguageTest extends PHPUnit_Framework_TestCase
     {
         return [['de'], ['en-UK']];
     }
+
+    public function testToString()
+    {
+        $language = Language::get('de');
+
+        $this->assertEquals('de', $language->__toString());
+    }
 }
