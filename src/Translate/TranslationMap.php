@@ -13,7 +13,7 @@ class TranslationMap implements TranslationMapInterface
     private $translations;
 
     /**
-     * @param Translation[] $translations
+     * @param TranslationInterface[] $translations
      */
     public function __construct(array $translations)
     {
@@ -47,5 +47,18 @@ class TranslationMap implements TranslationMapInterface
     public function getAll()
     {
         return $this->translations;
+    }
+
+    /**
+     * @param TranslationInterface $translation
+     * @return TranslationMapInterface
+     */
+    public function withTranslation(TranslationInterface $translation)
+    {
+        $newMap = clone $this;
+        $translations = clone $this->translations;
+        $translations->offsetSet($translation->getLanguage(), $translation->getText());
+        $newMap->translations = $translations;
+        return $newMap;
     }
 }

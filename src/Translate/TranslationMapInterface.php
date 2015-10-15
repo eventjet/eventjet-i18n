@@ -23,4 +23,10 @@ interface TranslationMapInterface
      * @return Translation[]|SplObjectStorage
      */
     public function getAll();
+
+    /**
+     * @param TranslationInterface $translation
+     * @return TranslationMapInterface
+     */
+    public function withTranslation(TranslationInterface $translation);
 }
