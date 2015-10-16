@@ -39,4 +39,18 @@ class TranslationMapFactoryTest extends PHPUnit_Framework_TestCase
             ]
         ];
     }
+
+    public function testTextsAreTrimmed()
+    {
+        $map = $this->factory->create(['de' => ' de', 'en' => 'en ', 'es' => ' es ', 'it' => "it\n"]);
+        foreach ($map->getAll() as $translation) {
+            $this->assertEquals((string)$translation->getLanguage(), $translation->getText());
+        }
+    }
+
+    public function testEmptyTextsAreRemoved()
+    {
+        $map = $this->factory->create(['de' => 'Test', 'en' => '', 'es' => ' ', 'it' => "\n"]);
+        $this->assertCount(1, $map->getAll());
+    }
 }
