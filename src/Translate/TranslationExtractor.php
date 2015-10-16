@@ -9,7 +9,7 @@ use Eventjet\I18n\Language\LanguagePriorityInterface;
 class TranslationExtractor implements TranslationExtractorInterface
 {
     /**
-     * @param TranslationMapInterface                       $map
+     * @param TranslationMapInterface $map
      * @param LanguagePriorityInterface|LanguageInterface[] $priorities
      * @return string
      */
@@ -20,7 +20,7 @@ class TranslationExtractor implements TranslationExtractorInterface
     }
 
     /**
-     * @param TranslationMapInterface   $map
+     * @param TranslationMapInterface $map
      * @param LanguagePriorityInterface $priorities
      * @return null|string
      */
@@ -52,9 +52,9 @@ class TranslationExtractor implements TranslationExtractorInterface
             return $map->get($english);
         }
         $translations = $map->getAll();
-        $translations->rewind();
-        /** @var LanguageInterface $language */
-        $language = $translations->current();
-        return $map->get($language);
+        reset($translations);
+        /** @var TranslationInterface $translation */
+        $translation = current($translations);
+        return $map->get($translation->getLanguage());
     }
 }

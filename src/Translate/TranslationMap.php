@@ -3,23 +3,21 @@
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
-use SplObjectStorage;
 
 class TranslationMap implements TranslationMapInterface
 {
     /**
-     * @var Translation[]|SplObjectStorage
+     * @var Translation[]
      */
-    private $translations;
+    private $translations = [];
 
     /**
      * @param TranslationInterface[] $translations
      */
     public function __construct(array $translations)
     {
-        $this->translations = new SplObjectStorage();
         foreach ($translations as $translation) {
-            $this->translations->offsetSet($translation->getLanguage(), $translation->getText());
+            $this->translations[(string)$translation->getLanguage()] = $translation;
         }
     }
 
@@ -29,7 +27,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public function has(LanguageInterface $language)
     {
-        return $this->translations->offsetExists($language);
+        return isset($this->translations[(string)$language]);
     }
 
     /**
@@ -38,11 +36,11 @@ class TranslationMap implements TranslationMapInterface
      */
     public function get(LanguageInterface $language)
     {
-        return $this->translations->offsetGet($language);
+        return $this->translations[(string)$language]->getText();
     }
 
     /**
-     * @return Translation[]
+     * @return TranslationInterface[]
      */
     public function getAll()
     {
@@ -56,9 +54,7 @@ class TranslationMap implements TranslationMapInterface
     public function withTranslation(TranslationInterface $translation)
     {
         $newMap = clone $this;
-        $translations = clone $this->translations;
-        $translations->offsetSet($translation->getLanguage(), $translation->getText());
-        $newMap->translations = $translations;
+        $newMap->translations[(string)$translation->getLanguage()] = $translation;
         return $newMap;
     }
 }
