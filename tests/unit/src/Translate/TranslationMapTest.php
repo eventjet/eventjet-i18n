@@ -52,4 +52,12 @@ class TranslationMapTest extends PHPUnit_Framework_TestCase
 
         $this->assertContainsOnlyInstancesOf(TranslationInterface::class, $translations);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testEmptyMapThrowsException()
+    {
+        new TranslationMap([]);
+    }
 }
