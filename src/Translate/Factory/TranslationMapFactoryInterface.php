@@ -8,7 +8,7 @@ interface TranslationMapFactoryInterface
 {
     /**
      * @param array $mapData
-     * @return TranslationMapInterface
+     * @return TranslationMapInterface|null Returns null if the map data doesn't contain any translations
      */
     public function create(array $mapData);
 }

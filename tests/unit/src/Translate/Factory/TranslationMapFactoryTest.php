@@ -53,4 +53,24 @@ class TranslationMapFactoryTest extends PHPUnit_Framework_TestCase
         $map = $this->factory->create(['de' => 'Test', 'en' => '', 'es' => ' ', 'it' => "\n"]);
         $this->assertCount(1, $map->getAll());
     }
+
+    /**
+     * @dataProvider emptyMapData
+     * @param array $mapData
+     */
+    public function testCreateReturnsNullifMapDataIsEmpty(array $mapData)
+    {
+        $translationMap = $this->factory->create($mapData);
+
+        $this->assertNull($translationMap);
+    }
+
+    public function emptyMapData()
+    {
+        return [
+            [[]],
+            [['de' => '']],
+            [['de' => '', 'en' => ' ', 'es' => "\n"]],
+        ];
+    }
 }
