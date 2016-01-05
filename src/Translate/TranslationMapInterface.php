@@ -14,7 +14,7 @@ interface TranslationMapInterface
 
     /**
      * @param LanguageInterface $language
-     * @return string
+     * @return string|null
      */
     public function get(LanguageInterface $language);
 

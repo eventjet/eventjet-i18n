@@ -60,4 +60,11 @@ class TranslationMapTest extends PHPUnit_Framework_TestCase
     {
         new TranslationMap([]);
     }
+
+    public function testGetReturnsNullIfNoTranslationsExistsForTheGivenLanguage()
+    {
+        $map = new TranslationMap([new Translation(Language::get('de'), 'Test')]);
+
+        $this->assertNull($map->get(Language::get('en')));
+    }
 }

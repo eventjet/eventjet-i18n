@@ -36,10 +36,13 @@ class TranslationMap implements TranslationMapInterface
 
     /**
      * @param LanguageInterface $language
-     * @return string
+     * @return string|null
      */
     public function get(LanguageInterface $language)
     {
+        if (!isset($this->translations[(string)$language])) {
+            return null;
+        }
         return $this->translations[(string)$language]->getText();
     }
 
