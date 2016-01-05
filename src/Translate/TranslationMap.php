@@ -3,6 +3,7 @@
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
+use InvalidArgumentException;
 
 class TranslationMap implements TranslationMapInterface
 {
@@ -16,6 +17,9 @@ class TranslationMap implements TranslationMapInterface
      */
     public function __construct(array $translations)
     {
+        if (count($translations) === 0) {
+            throw new InvalidArgumentException('Empty translation maps are not allowed.');
+        }
         foreach ($translations as $translation) {
             $this->translations[(string)$translation->getLanguage()] = $translation;
         }
@@ -32,10 +36,13 @@ class TranslationMap implements TranslationMapInterface
 
     /**
      * @param LanguageInterface $language
-     * @return string
+     * @return string|null
      */
     public function get(LanguageInterface $language)
     {
+        if (!isset($this->translations[(string)$language])) {
+            return null;
+        }
         return $this->translations[(string)$language]->getText();
     }
 

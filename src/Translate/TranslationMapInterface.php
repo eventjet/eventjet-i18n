@@ -3,7 +3,6 @@
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
-use SplObjectStorage;
 
 interface TranslationMapInterface
 {
@@ -15,12 +14,12 @@ interface TranslationMapInterface
 
     /**
      * @param LanguageInterface $language
-     * @return string
+     * @return string|null
      */
     public function get(LanguageInterface $language);
 
     /**
-     * @return Translation[]|SplObjectStorage
+     * @return Translation[]
      */
     public function getAll();
 
