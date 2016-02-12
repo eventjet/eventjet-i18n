@@ -67,4 +67,18 @@ class TranslationMapTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($map->get(Language::get('en')));
     }
+
+    public function testJsonSerialize()
+    {
+        $map = new TranslationMap([
+            new Translation(Language::get('en'), 'My Test'),
+            new Translation(Language::get('de'), 'Mein Test'),
+        ]);
+
+        $json = $map->jsonSerialize();
+
+        $this->assertCount(2, $json);
+        $this->assertEquals($json['en'], 'My Test');
+        $this->assertEquals($json['de'], 'Mein Test');
+    }
 }

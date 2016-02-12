@@ -64,4 +64,16 @@ class TranslationMap implements TranslationMapInterface
         $newMap->translations[(string)$translation->getLanguage()] = $translation;
         return $newMap;
     }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $json = [];
+        foreach ($this->translations as $translation) {
+            $json[(string)$translation->getLanguage()] = $translation->getText();
+        }
+        return $json;
+    }
 }

@@ -3,8 +3,9 @@
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
+use JsonSerializable;
 
-interface TranslationMapInterface
+interface TranslationMapInterface extends JsonSerializable
 {
     /**
      * @param LanguageInterface $language
