@@ -3,9 +3,11 @@
 namespace EventjetTest\I18n;
 
 use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationInterface;
 use Eventjet\I18n\Translate\TranslationMap;
+use Eventjet\I18n\Translate\TranslationMapInterface;
 use PHPUnit_Framework_TestCase;
 
 class TranslationMapTest extends PHPUnit_Framework_TestCase
@@ -80,5 +82,35 @@ class TranslationMapTest extends PHPUnit_Framework_TestCase
         $this->assertCount(2, $json);
         $this->assertEquals($json['en'], 'My Test');
         $this->assertEquals($json['de'], 'Mein Test');
+    }
+
+    public function equalsData()
+    {
+        $data = [
+            [['de' => 'DE'], ['de' => 'DE'], true],
+            [['de' => 'DE'], ['de' => 'EN'], false],
+            [['de' => 'DE'], ['en' => 'DE'], false],
+            [['de' => 'DE'], ['de' => 'DE', 'en' => 'EN'], false],
+            [['de' => 'DE'], ['de' => 'DE', 'en' => 'DE'], false],
+            [['de' => 'DE', 'en' => 'EN'], ['en' => 'EN', 'de' => 'DE'], true],
+        ];
+        $factory = new TranslationMapFactory;
+        $data = array_map(function ($d) use ($factory) {
+            return [$factory->create($d[0]), $factory->create($d[1]), $d[2]];
+        }, $data);
+        $data['same object'] = [$data[0][0], $data[0][0], true];
+        return $data;
+    }
+
+    /**
+     * @param TranslationMapInterface $a
+     * @param TranslationMapInterface $b
+     * @param boolean $equal
+     * @dataProvider equalsData
+     */
+    public function testEquals(TranslationMapInterface $a, TranslationMapInterface $b, $equal)
+    {
+        $this->assertEquals($equal, $a->equals($b));
+        $this->assertEquals($equal, $b->equals($a));
     }
 }

@@ -76,4 +76,28 @@ class TranslationMap implements TranslationMapInterface
         }
         return $json;
     }
+
+    /**
+     * @param TranslationMapInterface $other
+     * @return boolean
+     */
+    public function equals(TranslationMapInterface $other)
+    {
+        if ($this === $other) {
+            return true;
+        }
+        $otherData = $other->getAll();
+        if (count($this->translations) !== count($otherData)) {
+            return false;
+        }
+        foreach ($this->translations as $translation) {
+            if (!$other->has($translation->getLanguage())) {
+                return false;
+            }
+            if ($other->get($translation->getLanguage()) !== $translation->getText()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
