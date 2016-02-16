@@ -29,4 +29,10 @@ interface TranslationMapInterface extends JsonSerializable
      * @return TranslationMapInterface
      */
     public function withTranslation(TranslationInterface $translation);
+
+    /**
+     * @param TranslationMapInterface $other
+     * @return boolean
+     */
+    public function equals(TranslationMapInterface $other);
 }
