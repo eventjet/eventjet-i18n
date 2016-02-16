@@ -83,6 +83,9 @@ class TranslationMap implements TranslationMapInterface
      */
     public function equals(TranslationMapInterface $other)
     {
+        if ($this === $other) {
+            return true;
+        }
         $otherData = $other->getAll();
         if (count($this->translations) !== count($otherData)) {
             return false;
