@@ -13,11 +13,14 @@
     ],
     "license": "MIT",
     "require-dev": {
-        "phpunit/phpunit": "^4.8.6"
+        "phpunit/phpunit": "^5.0"
     },
     "autoload": {
         "psr-4": {
             "Eventjet\\I18n\\": "src"
         }
+    },
+    "require": {
+        "beberlei/assert": "^2.5"
     }
 }
