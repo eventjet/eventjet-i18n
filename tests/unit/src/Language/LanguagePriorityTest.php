@@ -28,7 +28,7 @@ class LanguagePriorityTest extends PHPUnit_Framework_TestCase
 
     public function testNoLanguages()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         new LanguagePriority([]);
     }
 
