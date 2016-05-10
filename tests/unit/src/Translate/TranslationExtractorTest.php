@@ -3,7 +3,7 @@
 namespace EventjetTest\I18n;
 
 use Eventjet\I18n\Language\Language;
-use Eventjet\I18n\Language\LanguagePrioriry;
+use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Language\LanguagePriorityInterface;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
@@ -63,7 +63,7 @@ class TranslationExtractorTest extends PHPUnit_Framework_TestCase
 
     private function createPriority(array $priorityData)
     {
-        return new LanguagePrioriry(array_map(function ($language) {
+        return new LanguagePriority(array_map(function ($language) {
             return Language::get($language);
         }, $priorityData));
     }
