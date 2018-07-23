@@ -5,9 +5,9 @@ namespace EventjetTest\I18n\Translate\Factory;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TranslationMapFactoryTest extends PHPUnit_Framework_TestCase
+class TranslationMapFactoryTest extends TestCase
 {
     /** @var TranslationMapFactory */
     private $factory;

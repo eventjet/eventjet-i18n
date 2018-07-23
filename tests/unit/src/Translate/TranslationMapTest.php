@@ -8,9 +8,9 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationInterface;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TranslationMapTest extends PHPUnit_Framework_TestCase
+class TranslationMapTest extends TestCase
 {
     public function testHasReturnsFalseIfTranslationDoesNotExist()
     {

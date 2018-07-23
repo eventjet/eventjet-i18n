@@ -9,10 +9,10 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
 
-class TranslationExtractorTest extends PHPUnit_Framework_TestCase
+class TranslationExtractorTest extends TestCase
 {
     /** @var TranslationExtractor */
     private $languageExtractor;
@@ -20,8 +20,8 @@ class TranslationExtractorTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider extractData
      * @param \Eventjet\I18n\Translate\TranslationMapInterface $map
-     * @param LanguagePriorityInterface                        $priority
-     * @param string                                           $expectedReturn
+     * @param LanguagePriorityInterface $priority
+     * @param string $expectedReturn
      */
     public function testExtract(TranslationMapInterface $map, LanguagePriorityInterface $priority, $expectedReturn)
     {
