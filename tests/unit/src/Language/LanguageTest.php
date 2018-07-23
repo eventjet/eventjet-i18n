@@ -3,9 +3,9 @@
 namespace EventjetTest\I18n;
 
 use Eventjet\I18n\Language\Language;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LanguageTest extends PHPUnit_Framework_TestCase
+class LanguageTest extends TestCase
 {
     public function testGetReturnsTheSameInstanceForTheSameString()
     {
@@ -29,6 +29,8 @@ class LanguageTest extends PHPUnit_Framework_TestCase
     public function testValidLanguage($language)
     {
         Language::get($language);
+
+        $this->assertTrue(true);
     }
 
     public function invalidLanguageFormats()

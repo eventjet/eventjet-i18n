@@ -5,9 +5,9 @@ namespace EventjetTest\I18n;
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePrioriry;
 use Eventjet\I18n\Language\LanguagePriority;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LanguagePrioriryTest extends PHPUnit_Framework_TestCase
+class LanguagePrioriryTest extends TestCase
 {
     public function testExtendsLanguagePriority()
     {

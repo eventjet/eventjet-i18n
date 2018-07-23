@@ -4,8 +4,9 @@ namespace EventjetTest\I18n;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Translation;
+use PHPUnit\Framework\TestCase;
 
-class TranslationTest extends \PHPUnit_Framework_TestCase
+class TranslationTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException

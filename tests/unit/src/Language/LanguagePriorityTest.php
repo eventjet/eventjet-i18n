@@ -5,14 +5,14 @@ namespace EventjetTest\I18n;
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class LanguagePriorityTest
  *
  * @package EventjetTest\I18n
  */
-class LanguagePriorityTest extends PHPUnit_Framework_TestCase
+class LanguagePriorityTest extends TestCase
 {
     public function testGetAllReturnsAllLanguages()
     {
@@ -28,7 +28,7 @@ class LanguagePriorityTest extends PHPUnit_Framework_TestCase
 
     public function testNoLanguages()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new LanguagePriority([]);
     }
 
