@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Eventjet\I18n\Language;
 
@@ -39,7 +39,7 @@ class Language implements LanguageInterface
     public function hasRegion()
     {
         if ($this->hasRegion === null) {
-            $this->hasRegion = strstr($this->language, '-') !== false;
+            $this->hasRegion = strpos($this->language, '-') !== false;
         }
         return $this->hasRegion;
     }

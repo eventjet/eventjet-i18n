@@ -1,13 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace EventjetTest\I18n;
+namespace EventjetTest\I18n\Language;
 
 use Eventjet\I18n\Language\Language;
 use PHPUnit\Framework\TestCase;
 
 class LanguageTest extends TestCase
 {
-    public function testGetReturnsTheSameInstanceForTheSameString()
+    public function testGetReturnsTheSameInstanceForTheSameString(): void
     {
         $this->assertSame(Language::get('de'), Language::get('de'));
     }
@@ -17,7 +17,7 @@ class LanguageTest extends TestCase
      * @dataProvider invalidLanguageFormats
      * @param string $language
      */
-    public function testInvalidLanguageThrowsException($language)
+    public function testInvalidLanguageThrowsException($language): void
     {
         Language::get($language);
     }
@@ -26,24 +26,24 @@ class LanguageTest extends TestCase
      * @dataProvider validLanguageFormats
      * @param string $language
      */
-    public function testValidLanguage($language)
+    public function testValidLanguage($language): void
     {
         Language::get($language);
 
         $this->assertTrue(true);
     }
 
-    public function invalidLanguageFormats()
+    public function invalidLanguageFormats(): array
     {
         return [['DE'], ['de_DE'], ['deu'], ['']];
     }
 
-    public function validLanguageFormats()
+    public function validLanguageFormats(): array
     {
         return [['de'], ['en-UK']];
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $language = Language::get('de');
 

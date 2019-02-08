@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate;
 
@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class TranslationMap implements TranslationMapInterface
 {
     /**
-     * @var Translation[]
+     * @var TranslationInterface[]
      */
     private $translations = [];
 
@@ -79,7 +79,7 @@ class TranslationMap implements TranslationMapInterface
 
     /**
      * @param TranslationMapInterface $other
-     * @return boolean
+     * @return bool
      */
     public function equals(TranslationMapInterface $other)
     {

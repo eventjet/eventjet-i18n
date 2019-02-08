@@ -1,11 +1,27 @@
+build:
+  nodes:
+    ej-default:
+      environment:
+        php:
+          version: "7.1"
+      tests:
+        override:
+          - 'composer check-deps'
+          - 'composer cs-check'
+          - 'composer phpstan'
+          - command: 'vendor/bin/phpunit --coverage-clover=coverage'
+            coverage:
+              file: 'coverage'
+              format: 'php-clover'
+          - 'composer infection-xdebug'
 checks:
-    php:
-        code_rating: true
-        duplication: true
+  php:
+    code_rating: true
+    duplication: true
 
 filter:
-    excluded_paths:
-      - "tests/"
+  excluded_paths:
+    - "tests/"
 
 tools:
-    external_code_coverage: true
+  external_code_coverage: true

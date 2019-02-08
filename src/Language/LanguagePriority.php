@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Eventjet\I18n\Language;
 
@@ -6,14 +6,10 @@ use InvalidArgumentException;
 
 class LanguagePriority implements LanguagePriorityInterface
 {
-    /**
-     * @var LanguageInterface[]
-     */
+    /** @var LanguageInterface[] */
     private $languages;
 
     /**
-     * LanguagePriority constructor.
-     *
      * @param LanguageInterface[] $languages
      */
     public function __construct(array $languages)
@@ -63,6 +59,8 @@ class LanguagePriority implements LanguagePriorityInterface
      */
     public function primary()
     {
-        return reset($this->languages);
+        $primary = reset($this->languages);
+        \assert($primary !== false);
+        return $primary;
     }
 }

@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace EventjetTest\I18n;
+namespace EventjetTest\I18n\Language;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePrioriry;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class LanguagePrioriryTest extends TestCase
 {
-    public function testExtendsLanguagePriority()
+    public function testExtendsLanguagePriority(): void
     {
         /** @noinspection PhpDeprecationInspection */
         $prioriry = new LanguagePrioriry([Language::get('de')]);

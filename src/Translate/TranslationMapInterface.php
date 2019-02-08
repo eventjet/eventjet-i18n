@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate;
 
@@ -32,7 +32,7 @@ interface TranslationMapInterface extends JsonSerializable
 
     /**
      * @param TranslationMapInterface $other
-     * @return boolean
+     * @return bool
      */
     public function equals(TranslationMapInterface $other);
 }

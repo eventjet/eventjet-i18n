@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace EventjetTest\I18n;
+namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
@@ -12,14 +12,14 @@ use PHPUnit\Framework\TestCase;
 
 class TranslationMapTest extends TestCase
 {
-    public function testHasReturnsFalseIfTranslationDoesNotExist()
+    public function testHasReturnsFalseIfTranslationDoesNotExist(): void
     {
         $map = new TranslationMap([new Translation(Language::get('de'), 'Test')]);
 
         $this->assertFalse($map->has(Language::get('en')));
     }
 
-    public function testWithTranslation()
+    public function testWithTranslation(): void
     {
         $map = new TranslationMap([new Translation(Language::get('de'), 'Deutsch')]);
 
@@ -31,7 +31,7 @@ class TranslationMapTest extends TestCase
         $this->assertFalse($map->has($en));
     }
 
-    public function testWithTranslationOverridesExistingTranslation()
+    public function testWithTranslationOverridesExistingTranslation(): void
     {
         $de = Language::get('de');
         $map = new TranslationMap([new Translation($de, 'Original')]);
@@ -42,7 +42,7 @@ class TranslationMapTest extends TestCase
         $this->assertEquals('Original', $map->get($de));
     }
 
-    public function testGetAllReturnsArrayOfTranslations()
+    public function testGetAllReturnsArrayOfTranslations(): void
     {
         $map = new TranslationMap([
             new Translation(Language::get('de'), 'Deutsch'),
@@ -55,22 +55,21 @@ class TranslationMapTest extends TestCase
         $this->assertContainsOnlyInstancesOf(TranslationInterface::class, $translations);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testEmptyMapThrowsException()
+    public function testEmptyMapThrowsException(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new TranslationMap([]);
     }
 
-    public function testGetReturnsNullIfNoTranslationsExistsForTheGivenLanguage()
+    public function testGetReturnsNullIfNoTranslationsExistsForTheGivenLanguage(): void
     {
         $map = new TranslationMap([new Translation(Language::get('de'), 'Test')]);
 
         $this->assertNull($map->get(Language::get('en')));
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $map = new TranslationMap([
             new Translation(Language::get('en'), 'My Test'),
@@ -103,12 +102,9 @@ class TranslationMapTest extends TestCase
     }
 
     /**
-     * @param TranslationMapInterface $a
-     * @param TranslationMapInterface $b
-     * @param boolean $equal
      * @dataProvider equalsData
      */
-    public function testEquals(TranslationMapInterface $a, TranslationMapInterface $b, $equal)
+    public function testEquals(TranslationMapInterface $a, TranslationMapInterface $b, bool $equal): void
     {
         $this->assertEquals($equal, $a->equals($b));
         $this->assertEquals($equal, $b->equals($a));

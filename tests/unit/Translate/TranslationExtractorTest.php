@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace EventjetTest\I18n;
+namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
@@ -9,8 +9,8 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 class TranslationExtractorTest extends TestCase
 {
@@ -19,12 +19,12 @@ class TranslationExtractorTest extends TestCase
 
     /**
      * @dataProvider extractData
-     * @param \Eventjet\I18n\Translate\TranslationMapInterface $map
-     * @param LanguagePriorityInterface $priority
-     * @param string $expectedReturn
      */
-    public function testExtract(TranslationMapInterface $map, LanguagePriorityInterface $priority, $expectedReturn)
-    {
+    public function testExtract(
+        TranslationMapInterface $map,
+        LanguagePriorityInterface $priority,
+        string $expectedReturn
+    ): void {
         $this->assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
     }
 
@@ -50,7 +50,7 @@ class TranslationExtractorTest extends TestCase
 
     /**
      * @param array $mapData
-     * @return PHPUnit_Framework_MockObject_MockObject|\Eventjet\I18n\Translate\TranslationMap
+     * @return MockObject|TranslationMap
      */
     private function createTranslationMap(array $mapData)
     {
@@ -61,14 +61,14 @@ class TranslationExtractorTest extends TestCase
         return new TranslationMap($translations);
     }
 
-    private function createPriority(array $priorityData)
+    private function createPriority(array $priorityData): LanguagePriority
     {
         return new LanguagePriority(array_map(function ($language) {
             return Language::get($language);
         }, $priorityData));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->languageExtractor = new TranslationExtractor();
     }
