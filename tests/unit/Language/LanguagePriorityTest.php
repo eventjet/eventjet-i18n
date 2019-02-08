@@ -1,20 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace EventjetTest\I18n;
+namespace EventjetTest\I18n\Language;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class LanguagePriorityTest
- *
- * @package EventjetTest\I18n
- */
 class LanguagePriorityTest extends TestCase
 {
-    public function testGetAllReturnsAllLanguages()
+    public function testGetAllReturnsAllLanguages(): void
     {
         $languages = [Language::get('de'), Language::get('en')];
         $priority = new LanguagePriority($languages);
@@ -26,13 +21,13 @@ class LanguagePriorityTest extends TestCase
         $this->assertEquals($all[1], $languages[1]);
     }
 
-    public function testNoLanguages()
+    public function testNoLanguages(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new LanguagePriority([]);
     }
 
-    public function testPrimary()
+    public function testPrimary(): void
     {
         $priority = new LanguagePriority([
             Language::get('de-AT'),
@@ -40,5 +35,20 @@ class LanguagePriorityTest extends TestCase
         ]);
 
         $this->assertSame(Language::get('de-AT'), $priority->primary());
+    }
+
+    public function testKey(): void
+    {
+        $priority = new LanguagePriority([
+            Language::get('de-AT'),
+            Language::get('en-US'),
+        ]);
+
+        $firstKey = $priority->key();
+        $priority->next();
+        $nextKey = $priority->key();
+
+        $this->assertSame(0, $firstKey);
+        $this->assertSame(1, $nextKey);
     }
 }

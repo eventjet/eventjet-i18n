@@ -1,7 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace EventjetTest\I18n\Translate\Factory;
-
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
@@ -12,7 +11,7 @@ class TranslationMapFactoryTest extends TestCase
     /** @var TranslationMapFactory */
     private $factory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->factory = new TranslationMapFactory();
     }
@@ -21,7 +20,7 @@ class TranslationMapFactoryTest extends TestCase
      * @param array $mapData
      * @dataProvider validMapData
      */
-    public function testCreate(array $mapData)
+    public function testCreate(array $mapData): void
     {
         $map = $this->factory->create($mapData);
         foreach ($mapData as $lang => $text) {
@@ -29,18 +28,18 @@ class TranslationMapFactoryTest extends TestCase
         }
     }
 
-    public function validMapData()
+    public function validMapData(): array
     {
         return [
             [
                 ['de' => 'Ein Test'],
                 ['de' => 'Ein Test', 'en' => 'A test'],
                 ['en' => 'A test', 'de' => 'Ein Test'],
-            ]
+            ],
         ];
     }
 
-    public function testTextsAreTrimmed()
+    public function testTextsAreTrimmed(): void
     {
         $map = $this->factory->create(['de' => ' de', 'en' => 'en ', 'es' => ' es ', 'it' => "it\n"]);
         foreach ($map->getAll() as $translation) {
@@ -48,7 +47,7 @@ class TranslationMapFactoryTest extends TestCase
         }
     }
 
-    public function testEmptyTextsAreRemoved()
+    public function testEmptyTextsAreRemoved(): void
     {
         $map = $this->factory->create(['de' => 'Test', 'en' => '', 'es' => ' ', 'it' => "\n"]);
         $this->assertCount(1, $map->getAll());
@@ -58,14 +57,14 @@ class TranslationMapFactoryTest extends TestCase
      * @dataProvider emptyMapData
      * @param array $mapData
      */
-    public function testCreateReturnsNullifMapDataIsEmpty(array $mapData)
+    public function testCreateReturnsNullifMapDataIsEmpty(array $mapData): void
     {
         $translationMap = $this->factory->create($mapData);
 
         $this->assertNull($translationMap);
     }
 
-    public function emptyMapData()
+    public function emptyMapData(): array
     {
         return [
             [[]],

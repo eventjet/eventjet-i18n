@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate\Factory;
 
@@ -28,9 +28,8 @@ class TranslationMapFactory implements TranslationMapFactoryInterface
 
     /**
      * @param string $text
-     * @return bool
      */
-    private function isTextNotEmpty($text)
+    private function isTextNotEmpty($text): bool
     {
         return $text !== '';
     }
