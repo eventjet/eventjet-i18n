@@ -4,6 +4,9 @@ namespace Eventjet\I18n\Language;
 
 use Iterator;
 
+/**
+ * @deprecated Use LanguagePriority directly
+ */
 interface LanguagePriorityInterface extends Iterator
 {
     /**

@@ -4,6 +4,7 @@ namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
+use function array_map;
 
 class TranslationMap implements TranslationMapInterface
 {
@@ -23,6 +24,18 @@ class TranslationMap implements TranslationMapInterface
         foreach ($translations as $translation) {
             $this->translations[(string)$translation->getLanguage()] = $translation;
         }
+    }
+
+    /**
+     * @param mixed[] $serialized
+     * @return TranslationMap
+     */
+    public static function deserialize(array $serialized): self
+    {
+        $translations = array_map(static function (array $translationData): Translation {
+            return Translation::deserialize($translationData);
+        }, $serialized);
+        return new self($translations);
     }
 
     /**
@@ -99,5 +112,15 @@ class TranslationMap implements TranslationMapInterface
             }
         }
         return true;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function serialize(): array
+    {
+        return array_map(static function (Translation $translation) {
+            return $translation->serialize();
+        }, $this->translations);
     }
 }

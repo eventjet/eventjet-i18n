@@ -19,10 +19,10 @@
     },
     "require-dev": {
         "eventjet/coding-standard": "^2.1",
-        "infection/infection": "^0.12.0",
-        "maglnet/composer-require-checker": "^1.1",
+        "infection/infection": "^0.13.4",
+        "maglnet/composer-require-checker": "^2.0",
         "phpstan/phpstan": "^0.11.1",
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^8.0"
     },
     "config": {
         "sort-packages": true
@@ -50,7 +50,7 @@
         "check-deps": "vendor/bin/composer-require-checker",
         "cs-check": "vendor/bin/phpcs",
         "cs-fix": "vendor/bin/phpcbf",
-        "infection": "vendor/bin/infection --threads=4 --min-msi=87 --min-covered-msi=87",
+        "infection": "vendor/bin/infection --threads=4 --min-msi=86 --min-covered-msi=90",
         "infection-xdebug": "@composer run infection -- --initial-tests-php-options='-d zend_extension=xdebug.so'",
         "phpstan": "vendor/bin/phpstan analyse src/ --level 7",
         "phpunit": "vendor/bin/phpunit"

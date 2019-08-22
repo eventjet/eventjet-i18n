@@ -4,6 +4,9 @@ namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
 
+/**
+ * @deprecated Use Translation directly
+ */
 interface TranslationInterface
 {
     /**

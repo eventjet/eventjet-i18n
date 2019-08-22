@@ -5,6 +5,9 @@ namespace Eventjet\I18n\Translate;
 use Eventjet\I18n\Language\LanguageInterface;
 use JsonSerializable;
 
+/**
+ * @deprecated Use TranslationMap directly
+ */
 interface TranslationMapInterface extends JsonSerializable
 {
     /**

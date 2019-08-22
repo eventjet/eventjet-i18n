@@ -2,11 +2,14 @@
 
 namespace Eventjet\I18n\Translate;
 
+use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
 
 class Translation implements TranslationInterface
 {
+    private const LANGUAGE = 'language';
+    private const TEXT = 'text';
     /** @var LanguageInterface */
     private $language;
     /** @var string */
@@ -16,7 +19,7 @@ class Translation implements TranslationInterface
      * Translation constructor.
      *
      * @param LanguageInterface $language
-     * @param string            $string
+     * @param string $string
      */
     public function __construct(LanguageInterface $language, $string)
     {
@@ -29,6 +32,11 @@ class Translation implements TranslationInterface
         }
         $this->language = $language;
         $this->text = $string;
+    }
+
+    public static function deserialize(array $serialized): self
+    {
+        return new self(Language::get($serialized[self::LANGUAGE]), $serialized[self::TEXT]);
     }
 
     /**
@@ -45,5 +53,16 @@ class Translation implements TranslationInterface
     public function getText()
     {
         return $this->text;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function serialize(): array
+    {
+        return [
+            self::LANGUAGE => (string)$this->language,
+            self::TEXT => $this->text,
+        ];
     }
 }

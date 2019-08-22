@@ -2,6 +2,9 @@
 
 namespace Eventjet\I18n\Language;
 
+/**
+ * @deprecated Use Language directly
+ */
 interface LanguageInterface
 {
     /**

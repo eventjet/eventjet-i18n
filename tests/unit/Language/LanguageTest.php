@@ -2,6 +2,7 @@
 
 namespace EventjetTest\I18n\Language;
 
+use Eventjet\I18n\Exception\InvalidLanguageFormatException;
 use Eventjet\I18n\Language\Language;
 use PHPUnit\Framework\TestCase;
 
@@ -13,12 +14,12 @@ class LanguageTest extends TestCase
     }
 
     /**
-     * @expectedException \Eventjet\I18n\Exception\InvalidLanguageFormatException
      * @dataProvider invalidLanguageFormats
-     * @param string $language
      */
-    public function testInvalidLanguageThrowsException($language): void
+    public function testInvalidLanguageThrowsException(string $language): void
     {
+        $this->expectException(InvalidLanguageFormatException::class);
+
         Language::get($language);
     }
 
