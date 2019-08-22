@@ -8,6 +8,8 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationInterface;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
+use Generator;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class TranslationMapTest extends TestCase
@@ -57,7 +59,7 @@ class TranslationMapTest extends TestCase
 
     public function testEmptyMapThrowsException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new TranslationMap([]);
     }
@@ -108,5 +110,22 @@ class TranslationMapTest extends TestCase
     {
         $this->assertEquals($equal, $a->equals($b));
         $this->assertEquals($equal, $b->equals($a));
+    }
+
+    /**
+     * @dataProvider serializationData
+     */
+    public function testSerialization(TranslationMap $map): void
+    {
+        $serialized = $map->serialize();
+
+        $deserialized = TranslationMap::deserialize($serialized);
+
+        self::assertTrue($deserialized->equals($map));
+    }
+
+    public function serializationData(): Generator
+    {
+        yield 'Single translation' => [new TranslationMap([new Translation(Language::get('en'), 'Foo')])];
     }
 }
