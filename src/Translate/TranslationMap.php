@@ -124,6 +124,10 @@ class TranslationMap implements TranslationMapInterface
         }, $this->translations);
     }
 
+    /**
+     * Takes a callable with the following signature:
+     * function (string $translation, Language $language): string
+     */
     public function withEachModified(callable $modifier): self
     {
         $modified = clone $this;
