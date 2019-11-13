@@ -128,4 +128,26 @@ class TranslationMapTest extends TestCase
     {
         yield 'Single translation' => [new TranslationMap([new Translation(Language::get('en'), 'Foo')])];
     }
+
+    public function testWithEachModified(): void
+    {
+        $original = new TranslationMap(
+            [
+                new Translation(Language::get('en'), 'My String'),
+                new Translation(Language::get('de'), 'Mein String'),
+            ]
+        );
+
+        $modified = $original->withEachModified(
+            static function (string $translation, Language $language): string {
+                if ($language === Language::get('de')) {
+                    return $translation . ' (Kopie)';
+                }
+                return $translation . ' (copy)';
+            }
+        );
+
+        self::assertEquals('Mein String (Kopie)', $modified->get(Language::get('de')));
+        self::assertEquals('My String (copy)', $modified->get(Language::get('en')));
+    }
 }

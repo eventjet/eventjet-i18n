@@ -123,4 +123,23 @@ class TranslationMap implements TranslationMapInterface
             return $translation->serialize();
         }, $this->translations);
     }
+
+    /**
+     * Takes a callable with the following signature:
+     * function (string $translation, Language $language): string
+     */
+    public function withEachModified(callable $modifier): self
+    {
+        $modified = clone $this;
+        $modified->translations = array_map(
+            static function (Translation $translation) use ($modifier): Translation {
+                return new Translation(
+                    $translation->getLanguage(),
+                    $modifier($translation->getText(), $translation->getLanguage())
+                );
+            },
+            $this->translations
+        );
+        return $modified;
+    }
 }
