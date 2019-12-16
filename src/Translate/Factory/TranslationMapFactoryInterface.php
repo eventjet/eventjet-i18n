@@ -7,7 +7,7 @@ use Eventjet\I18n\Translate\TranslationMapInterface;
 interface TranslationMapFactoryInterface
 {
     /**
-     * @param array $mapData
+     * @param array<string, string> $mapData
      * @return TranslationMapInterface|null Returns null if the map data doesn't contain any translations
      */
     public function create(array $mapData);

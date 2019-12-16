@@ -4,13 +4,15 @@ namespace Eventjet\I18n\Language;
 
 use InvalidArgumentException;
 
+use function assert;
+
 class LanguagePriority implements LanguagePriorityInterface
 {
-    /** @var LanguageInterface[] */
+    /** @var array<int, LanguageInterface> */
     private $languages;
 
     /**
-     * @param LanguageInterface[] $languages
+     * @param array<int, LanguageInterface> $languages
      */
     public function __construct(array $languages)
     {
@@ -28,28 +30,30 @@ class LanguagePriority implements LanguagePriorityInterface
         return $this->languages;
     }
 
-    public function current()
+    public function current(): LanguageInterface
     {
         return current($this->languages);
     }
 
-    public function next()
+    public function next(): LanguageInterface
     {
         return next($this->languages);
     }
 
-    public function key()
+    public function key(): int
     {
-        return key($this->languages);
+        $key = key($this->languages);
+        assert($key !== null);
+        return $key;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         $key = key($this->languages);
         return ($key !== null && $key !== false);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->languages);
     }
@@ -60,7 +64,7 @@ class LanguagePriority implements LanguagePriorityInterface
     public function primary()
     {
         $primary = reset($this->languages);
-        \assert($primary !== false);
+        assert($primary !== false);
         return $primary;
     }
 }

@@ -79,7 +79,7 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function jsonSerialize()
     {

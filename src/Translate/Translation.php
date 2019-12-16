@@ -24,16 +24,21 @@ class Translation implements TranslationInterface
     public function __construct(LanguageInterface $language, $string)
     {
         if (!is_string($string)) {
-            throw new InvalidArgumentException(sprintf(
-                'The constructor of %s expected a string as its second argument, but got %s.',
-                __CLASS__,
-                gettype($string)
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The constructor of %s expected a string as its second argument, but got %s.',
+                    __CLASS__,
+                    gettype($string)
+                )
+            );
         }
         $this->language = $language;
         $this->text = $string;
     }
 
+    /**
+     * @param array<string, string> $serialized
+     */
     public static function deserialize(array $serialized): self
     {
         return new self(Language::get($serialized[self::LANGUAGE]), $serialized[self::TEXT]);
