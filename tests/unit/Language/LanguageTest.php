@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EventjetTest\I18n\Language;
 
@@ -25,20 +27,25 @@ class LanguageTest extends TestCase
 
     /**
      * @dataProvider validLanguageFormats
-     * @param string $language
      */
-    public function testValidLanguage($language): void
+    public function testValidLanguage(string $language): void
     {
         Language::get($language);
 
         $this->assertTrue(true);
     }
 
+    /**
+     * @return array<string[]>
+     */
     public function invalidLanguageFormats(): array
     {
         return [['DE'], ['de_DE'], ['deu'], ['']];
     }
 
+    /**
+     * @return array<string[]>
+     */
     public function validLanguageFormats(): array
     {
         return [['de'], ['en-UK']];

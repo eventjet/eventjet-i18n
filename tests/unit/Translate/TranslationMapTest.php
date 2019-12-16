@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EventjetTest\I18n\Translate;
 
@@ -46,11 +48,13 @@ class TranslationMapTest extends TestCase
 
     public function testGetAllReturnsArrayOfTranslations(): void
     {
-        $map = new TranslationMap([
-            new Translation(Language::get('de'), 'Deutsch'),
-            new Translation(Language::get('en'), 'English'),
-            new Translation(Language::get('it'), 'Italiano'),
-        ]);
+        $map = new TranslationMap(
+            [
+                new Translation(Language::get('de'), 'Deutsch'),
+                new Translation(Language::get('en'), 'English'),
+                new Translation(Language::get('it'), 'Italiano'),
+            ]
+        );
 
         $translations = $map->getAll();
 
@@ -73,10 +77,12 @@ class TranslationMapTest extends TestCase
 
     public function testJsonSerialize(): void
     {
-        $map = new TranslationMap([
-            new Translation(Language::get('en'), 'My Test'),
-            new Translation(Language::get('de'), 'Mein Test'),
-        ]);
+        $map = new TranslationMap(
+            [
+                new Translation(Language::get('en'), 'My Test'),
+                new Translation(Language::get('de'), 'Mein Test'),
+            ]
+        );
 
         $json = $map->jsonSerialize();
 
@@ -85,7 +91,10 @@ class TranslationMapTest extends TestCase
         $this->assertEquals($json['de'], 'Mein Test');
     }
 
-    public function equalsData()
+    /**
+     * @return mixed[]
+     */
+    public function equalsData(): array
     {
         $data = [
             [['de' => 'DE'], ['de' => 'DE'], true],
@@ -95,10 +104,13 @@ class TranslationMapTest extends TestCase
             [['de' => 'DE'], ['de' => 'DE', 'en' => 'DE'], false],
             [['de' => 'DE', 'en' => 'EN'], ['en' => 'EN', 'de' => 'DE'], true],
         ];
-        $factory = new TranslationMapFactory;
-        $data = array_map(function ($d) use ($factory) {
-            return [$factory->create($d[0]), $factory->create($d[1]), $d[2]];
-        }, $data);
+        $factory = new TranslationMapFactory();
+        $data = array_map(
+            static function ($d) use ($factory) {
+                return [$factory->create($d[0]), $factory->create($d[1]), $d[2]];
+            },
+            $data
+        );
         $data['same object'] = [$data[0][0], $data[0][0], true];
         return $data;
     }

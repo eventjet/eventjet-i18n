@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Eventjet\I18n\Language;
 
@@ -30,7 +32,7 @@ class Language implements LanguageInterface
      */
     public static function isValid($language)
     {
-        return preg_match('/^([a-z]{2}(\-[A-Z]{2})?)$/', $language) === 1;
+        return preg_match('/^([a-z]{2}(-[A-Z]{2})?)$/', $language) === 1;
     }
 
     /**

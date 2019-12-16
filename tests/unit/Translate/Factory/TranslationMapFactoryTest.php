@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EventjetTest\I18n\Translate\Factory;
 
@@ -17,7 +19,7 @@ class TranslationMapFactoryTest extends TestCase
     }
 
     /**
-     * @param array $mapData
+     * @param array<string, string> $mapData
      * @dataProvider validMapData
      */
     public function testCreate(array $mapData): void
@@ -28,6 +30,9 @@ class TranslationMapFactoryTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array<array<string, string>>>
+     */
     public function validMapData(): array
     {
         return [
@@ -55,7 +60,7 @@ class TranslationMapFactoryTest extends TestCase
 
     /**
      * @dataProvider emptyMapData
-     * @param array $mapData
+     * @param array<array<string, string>> $mapData
      */
     public function testCreateReturnsNullifMapDataIsEmpty(array $mapData): void
     {
@@ -64,6 +69,9 @@ class TranslationMapFactoryTest extends TestCase
         $this->assertNull($translationMap);
     }
 
+    /**
+     * @return array<array<string, string>>
+     */
     public function emptyMapData(): array
     {
         return [

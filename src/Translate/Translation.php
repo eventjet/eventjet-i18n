@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate;
 
@@ -16,7 +18,7 @@ class Translation implements TranslationInterface
     private $text;
 
     /**
-     * Translation constructor.
+     *
      *
      * @param LanguageInterface $language
      * @param string $string

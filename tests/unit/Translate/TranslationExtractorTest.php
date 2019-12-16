@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace EventjetTest\I18n\Translate;
 
@@ -28,7 +30,10 @@ class TranslationExtractorTest extends TestCase
         $this->assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
     }
 
-    public function extractData()
+    /**
+     * @return array<mixed[]>
+     */
+    public function extractData(): array
     {
         $data = [
             [['de' => 'Deutsch'], ['de'], 'Deutsch'],
@@ -38,18 +43,21 @@ class TranslationExtractorTest extends TestCase
             [['de' => 'Deutsch', 'en' => 'English'], ['es'], 'English'],
             [['de' => 'Deutsch'], ['es'], 'Deutsch'],
         ];
-        $data = array_map(function (array $item) {
-            return [
-                $this->createTranslationMap($item[0]),
-                $this->createPriority($item[1]),
-                $item[2],
-            ];
-        }, $data);
+        $data = array_map(
+            function (array $item) {
+                return [
+                    $this->createTranslationMap($item[0]),
+                    $this->createPriority($item[1]),
+                    $item[2],
+                ];
+            },
+            $data
+        );
         return $data;
     }
 
     /**
-     * @param array $mapData
+     * @param array<string, string> $mapData
      * @return MockObject|TranslationMap
      */
     private function createTranslationMap(array $mapData)
@@ -61,11 +69,19 @@ class TranslationExtractorTest extends TestCase
         return new TranslationMap($translations);
     }
 
+    /**
+     * @param string[] $priorityData
+     */
     private function createPriority(array $priorityData): LanguagePriority
     {
-        return new LanguagePriority(array_map(function ($language) {
-            return Language::get($language);
-        }, $priorityData));
+        return new LanguagePriority(
+            array_map(
+                static function ($language) {
+                    return Language::get($language);
+                },
+                $priorityData
+            )
+        );
     }
 
     protected function setUp(): void

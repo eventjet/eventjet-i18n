@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
+
 use function array_map;
 
 class TranslationMap implements TranslationMapInterface

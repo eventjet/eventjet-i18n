@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Eventjet\I18n\Language;
 
@@ -35,9 +37,9 @@ class LanguagePriority implements LanguagePriorityInterface
         return current($this->languages);
     }
 
-    public function next(): LanguageInterface
+    public function next(): void
     {
-        return next($this->languages);
+        next($this->languages);
     }
 
     public function key(): int

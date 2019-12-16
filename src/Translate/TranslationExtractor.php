@@ -1,10 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use Eventjet\I18n\Language\LanguagePriorityInterface;
+
+use function assert;
 
 class TranslationExtractor implements TranslationExtractorInterface
 {
@@ -42,7 +46,7 @@ class TranslationExtractor implements TranslationExtractorInterface
         $english = Language::get('en');
         if ($map->has($english)) {
             $return = $map->get($english);
-            \assert($return !== null);
+            assert($return !== null);
             return $return;
         }
         $translations = $map->getAll();
@@ -50,7 +54,7 @@ class TranslationExtractor implements TranslationExtractorInterface
         /** @var TranslationInterface $translation */
         $translation = current($translations);
         $return = $map->get($translation->getLanguage());
-        \assert($return !== null);
+        assert($return !== null);
         return $return;
     }
 }
