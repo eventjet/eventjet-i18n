@@ -8,6 +8,10 @@ use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
 
+use function gettype;
+use function is_string;
+use function sprintf;
+
 class Translation implements TranslationInterface
 {
     private const LANGUAGE = 'language';
@@ -18,8 +22,6 @@ class Translation implements TranslationInterface
     private $text;
 
     /**
-     *
-     *
      * @param LanguageInterface $language
      * @param string $string
      */

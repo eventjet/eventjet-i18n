@@ -16,6 +16,6 @@ class LanguagePrioriryTest extends TestCase
         /** @noinspection PhpDeprecationInspection */
         $prioriry = new LanguagePrioriry([Language::get('de')]);
 
-        $this->assertInstanceOf(LanguagePriority::class, $prioriry);
+        self::assertInstanceOf(LanguagePriority::class, $prioriry);
     }
 }

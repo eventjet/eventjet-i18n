@@ -8,6 +8,7 @@ use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
 
 use function array_map;
+use function count;
 
 class TranslationMap implements TranslationMapInterface
 {
@@ -30,7 +31,7 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @param mixed[] $serialized
+     * @param array<string, string> $serialized
      * @return TranslationMap
      */
     public static function deserialize(array $serialized): self
@@ -130,6 +131,8 @@ class TranslationMap implements TranslationMapInterface
     /**
      * Takes a callable with the following signature:
      * function (string $translation, Language $language): string
+     *
+     * @param callable(string $translation, LanguageInterface $language): string $modifier
      */
     public function withEachModified(callable $modifier): self
     {

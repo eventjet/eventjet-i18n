@@ -1,0 +1,12 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$modifier of method Eventjet\\\\I18n\\\\Translate\\\\TranslationMap\\:\\:withEachModified\\(\\) expects callable\\(string, Eventjet\\\\I18n\\\\Language\\\\LanguageInterface\\)\\: string, Closure\\(string, Eventjet\\\\I18n\\\\Language\\\\Language\\)\\: string given\\.$#"
+			count: 1
+			path: tests/unit/Translate/TranslationMapTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$string of class Eventjet\\\\I18n\\\\Translate\\\\Translation constructor expects string, true given\\.$#"
+			count: 1
+			path: tests/unit/Translate/TranslationTest.php
+

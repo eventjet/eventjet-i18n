@@ -7,6 +7,11 @@ namespace Eventjet\I18n\Language;
 use InvalidArgumentException;
 
 use function assert;
+use function count;
+use function current;
+use function key;
+use function next;
+use function reset;
 
 class LanguagePriority implements LanguagePriorityInterface
 {
@@ -52,7 +57,7 @@ class LanguagePriority implements LanguagePriorityInterface
     public function valid(): bool
     {
         $key = key($this->languages);
-        return ($key !== null && $key !== false);
+        return ($key !== null);
     }
 
     public function rewind(): void

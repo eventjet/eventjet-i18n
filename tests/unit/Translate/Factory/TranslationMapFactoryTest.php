@@ -25,8 +25,9 @@ class TranslationMapFactoryTest extends TestCase
     public function testCreate(array $mapData): void
     {
         $map = $this->factory->create($mapData);
+        self::assertNotNull($map);
         foreach ($mapData as $lang => $text) {
-            $this->assertEquals($text, $map->get(Language::get($lang)));
+            self::assertEquals($text, $map->get(Language::get($lang)));
         }
     }
 
@@ -47,30 +48,32 @@ class TranslationMapFactoryTest extends TestCase
     public function testTextsAreTrimmed(): void
     {
         $map = $this->factory->create(['de' => ' de', 'en' => 'en ', 'es' => ' es ', 'it' => "it\n"]);
+        self::assertNotNull($map);
         foreach ($map->getAll() as $translation) {
-            $this->assertEquals((string)$translation->getLanguage(), $translation->getText());
+            self::assertEquals((string)$translation->getLanguage(), $translation->getText());
         }
     }
 
     public function testEmptyTextsAreRemoved(): void
     {
         $map = $this->factory->create(['de' => 'Test', 'en' => '', 'es' => ' ', 'it' => "\n"]);
-        $this->assertCount(1, $map->getAll());
+        self::assertNotNull($map);
+        self::assertCount(1, $map->getAll());
     }
 
     /**
      * @dataProvider emptyMapData
-     * @param array<array<string, string>> $mapData
+     * @param array<string, string> $mapData
      */
     public function testCreateReturnsNullifMapDataIsEmpty(array $mapData): void
     {
         $translationMap = $this->factory->create($mapData);
 
-        $this->assertNull($translationMap);
+        self::assertNull($translationMap);
     }
 
     /**
-     * @return array<array<string, string>>
+     * @return array<array<array<string, string>>>
      */
     public function emptyMapData(): array
     {

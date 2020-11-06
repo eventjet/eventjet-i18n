@@ -11,8 +11,9 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+
+use function array_map;
 
 class TranslationExtractorTest extends TestCase
 {
@@ -27,7 +28,7 @@ class TranslationExtractorTest extends TestCase
         LanguagePriorityInterface $priority,
         string $expectedReturn
     ): void {
-        $this->assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
+        self::assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
     }
 
     /**
@@ -58,9 +59,8 @@ class TranslationExtractorTest extends TestCase
 
     /**
      * @param array<string, string> $mapData
-     * @return MockObject|TranslationMap
      */
-    private function createTranslationMap(array $mapData)
+    private function createTranslationMap(array $mapData): TranslationMap
     {
         $translations = [];
         foreach ($mapData as $language => $string) {

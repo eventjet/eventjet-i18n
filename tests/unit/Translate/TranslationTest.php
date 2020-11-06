@@ -24,7 +24,7 @@ class TranslationTest extends TestCase
 
         $returnedLanguage = $translation->getLanguage();
 
-        $this->assertSame($language, $returnedLanguage);
+        self::assertSame($language, $returnedLanguage);
     }
 
     public function testGetText(): void
@@ -34,6 +34,6 @@ class TranslationTest extends TestCase
 
         $returnedText = $translation->getText();
 
-        $this->assertEquals($text, $returnedText);
+        self::assertEquals($text, $returnedText);
     }
 }

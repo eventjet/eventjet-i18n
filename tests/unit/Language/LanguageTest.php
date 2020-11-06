@@ -12,7 +12,7 @@ class LanguageTest extends TestCase
 {
     public function testGetReturnsTheSameInstanceForTheSameString(): void
     {
-        $this->assertSame(Language::get('de'), Language::get('de'));
+        self::assertSame(Language::get('de'), Language::get('de'));
     }
 
     /**
@@ -32,7 +32,7 @@ class LanguageTest extends TestCase
     {
         Language::get($language);
 
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     /**
@@ -55,6 +55,6 @@ class LanguageTest extends TestCase
     {
         $language = Language::get('de');
 
-        $this->assertEquals('de', $language->__toString());
+        self::assertEquals('de', $language->__toString());
     }
 }

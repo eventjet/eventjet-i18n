@@ -9,6 +9,11 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
 
+use function array_filter;
+use function array_keys;
+use function array_map;
+use function count;
+
 class TranslationMapFactory implements TranslationMapFactoryInterface
 {
     /**
