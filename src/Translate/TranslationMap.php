@@ -12,10 +12,8 @@ use function count;
 
 class TranslationMap implements TranslationMapInterface
 {
-    /**
-     * @var TranslationInterface[]
-     */
-    private $translations = [];
+    /** @var TranslationInterface[] */
+    private array $translations = [];
 
     /**
      * @param TranslationInterface[] $translations

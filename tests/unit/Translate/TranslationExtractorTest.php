@@ -17,8 +17,7 @@ use function array_map;
 
 class TranslationExtractorTest extends TestCase
 {
-    /** @var TranslationExtractor */
-    private $languageExtractor;
+    private TranslationExtractor $languageExtractor;
 
     /**
      * @dataProvider extractData

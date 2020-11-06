@@ -14,11 +14,9 @@ use function substr;
 class Language implements LanguageInterface
 {
     /** @var Language[] */
-    private static $pool = [];
-    /** @var string */
-    private $language;
-    /** @var bool|null */
-    private $hasRegion;
+    private static array $pool = [];
+    private string $language;
+    private ?bool $hasRegion = null;
 
     /**
      * @param string $language

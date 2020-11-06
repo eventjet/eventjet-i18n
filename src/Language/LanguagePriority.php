@@ -16,7 +16,7 @@ use function reset;
 class LanguagePriority implements LanguagePriorityInterface
 {
     /** @var array<int, LanguageInterface> */
-    private $languages;
+    private array $languages;
 
     /**
      * @param array<int, LanguageInterface> $languages

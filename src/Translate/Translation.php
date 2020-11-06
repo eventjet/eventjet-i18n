@@ -16,10 +16,8 @@ class Translation implements TranslationInterface
 {
     private const LANGUAGE = 'language';
     private const TEXT = 'text';
-    /** @var LanguageInterface */
-    private $language;
-    /** @var string */
-    private $text;
+    private LanguageInterface $language;
+    private string $text;
 
     /**
      * @param LanguageInterface $language
