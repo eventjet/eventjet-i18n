@@ -12,7 +12,7 @@ File automatically generated with [phly/keep-a-changelog](https://github.com/phl
 
 ### Changed
 
-- Nothing.
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) changes minimum PHP version to 7.4
 
 ### Deprecated
 
@@ -24,4 +24,4 @@ File automatically generated with [phly/keep-a-changelog](https://github.com/phl
 
 ### Fixed
 
-- Nothing.
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) fixed some minor glitches in doctypes
