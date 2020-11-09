@@ -13,7 +13,7 @@ use function substr;
 
 class Language implements LanguageInterface
 {
-    /** @var Language[] */
+    /** @var array<string, Language> */
     private static array $pool = [];
     private string $language;
     private ?bool $hasRegion = null;

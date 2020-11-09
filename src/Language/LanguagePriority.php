@@ -15,11 +15,11 @@ use function reset;
 
 class LanguagePriority implements LanguagePriorityInterface
 {
-    /** @var array<int, LanguageInterface> */
+    /** @var list<LanguageInterface> */
     private array $languages;
 
     /**
-     * @param array<int, LanguageInterface> $languages
+     * @param list<LanguageInterface> $languages
      */
     public function __construct(array $languages)
     {
@@ -30,7 +30,7 @@ class LanguagePriority implements LanguagePriorityInterface
     }
 
     /**
-     * @return LanguageInterface[]
+     * @return list<LanguageInterface>
      */
     public function getAll()
     {

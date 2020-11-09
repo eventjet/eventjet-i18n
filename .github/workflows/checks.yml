@@ -53,9 +53,14 @@ jobs:
           vendor/bin/phpunit --coverage-clover=coverage.xml --stop-on-failure
           composer run --timeout=0 infection
 
+      - name: Log Infection mutants
+        run: |
+          git fetch --depth=1 origin $GITHUB_BASE_REF
+          composer run --timeout=0 infection -- --logger-github --git-diff-filter=AM --git-diff-base=origin/$GITHUB_BASE_REF
+
       - name: Monitor coverage
         if: github.event_name == 'pull_request'
-        uses: slavcodev/coverage-monitor-action@1.2.0
+        uses: slavcodev/coverage-monitor-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           clover_file: "coverage.xml"
