@@ -8,7 +8,8 @@ File automatically generated with [phly/keep-a-changelog](https://github.com/phl
 
 ### Added
 
-- Nothing.
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) adds `TranslationMap::create` as replacement for `TranslationMapFactory`
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) adds `TranslationMap::pick` as replacement for `TranslationExtractor`
 
 ### Changed
 
@@ -16,7 +17,10 @@ File automatically generated with [phly/keep-a-changelog](https://github.com/phl
 
 ### Deprecated
 
-- Nothing.
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) deprecates `TranslationMapFactoryInterface` and `TranslationMapFactory`.
+  Use `TranslationMap::create` as replacement.
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) deprecates `TranslationExtractorInterface` and `TranslationExtractor`.
+  Use `TranslationMap::pick` as replacement.
 
 ### Removed
 
