@@ -5,13 +5,19 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguageInterface;
+use Eventjet\I18n\Language\LanguagePriority;
+use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
+use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use InvalidArgumentException;
 
 use function array_map;
+use function assert;
 use function count;
 
 class TranslationMap implements TranslationMapInterface
 {
+    private static ?TranslationMapFactory $factory = null;
+    private static ?TranslationExtractor $extractor = null;
     /** @var TranslationInterface[] */
     private array $translations = [];
 
@@ -29,15 +35,52 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
+     * @param array<string, string> $mapData
+     */
+    public static function create(array $mapData): self
+    {
+        $factory = self::getFactory();
+        $map = $factory->create($mapData);
+        if ($map === null) {
+            throw new InvalidTranslationMapDataException('Given translation map data is invalid');
+        }
+        assert($map instanceof self);
+        return $map;
+    }
+
+    /**
      * @param array<string, string> $serialized
      * @return TranslationMap
      */
     public static function deserialize(array $serialized): self
     {
-        $translations = array_map(static function (array $translationData): Translation {
-            return Translation::deserialize($translationData);
-        }, $serialized);
+        $translations = array_map(
+            static function (array $translationData): Translation {
+                return Translation::deserialize($translationData);
+            },
+            $serialized
+        );
         return new self($translations);
+    }
+
+    private static function getFactory(): TranslationMapFactory
+    {
+        if (self::$factory !== null) {
+            return self::$factory;
+        }
+        $factory = new TranslationMapFactory();
+        self::$factory = $factory;
+        return $factory;
+    }
+
+    private static function getExtractor(): TranslationExtractor
+    {
+        if (self::$extractor !== null) {
+            return self::$extractor;
+        }
+        $extractor = new TranslationExtractor();
+        self::$extractor = $extractor;
+        return $extractor;
     }
 
     /**
@@ -121,9 +164,12 @@ class TranslationMap implements TranslationMapInterface
      */
     public function serialize(): array
     {
-        return array_map(static function (Translation $translation) {
-            return $translation->serialize();
-        }, $this->translations);
+        return array_map(
+            static function (Translation $translation) {
+                return $translation->serialize();
+            },
+            $this->translations
+        );
     }
 
     /**
@@ -145,5 +191,11 @@ class TranslationMap implements TranslationMapInterface
             $this->translations
         );
         return $modified;
+    }
+
+    public function pick(LanguagePriority $languages): string
+    {
+        $extractor = self::getExtractor();
+        return $extractor->extract($this, $languages);
     }
 }

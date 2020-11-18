@@ -12,6 +12,9 @@ use function assert;
 use function current;
 use function reset;
 
+/**
+ * @deprecated use {@see TranslationMap::pick} instead
+ */
 class TranslationExtractor implements TranslationExtractorInterface
 {
     /**

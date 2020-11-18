@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Language\LanguagePriority;
+use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationInterface;
@@ -165,5 +167,45 @@ class TranslationMapTest extends TestCase
 
         self::assertEquals('Mein String (Kopie)', $modified->get(Language::get('de')));
         self::assertEquals('My String (copy)', $modified->get(Language::get('en')));
+    }
+
+    public function testCreateMap(): void
+    {
+        $mapData = ['de' => 'Foo'];
+
+        $map = TranslationMap::create($mapData);
+
+        self::assertSame('Foo', $map->get(Language::get('de')));
+        self::assertCount(1, $map->getAll());
+    }
+
+    public function testCreateMapThrowsExceptionWhenMapDataIsInvalid(): void
+    {
+        $this->expectException(InvalidTranslationMapDataException::class);
+
+        TranslationMap::create([]);
+    }
+
+    public function testPickTranslation(): void
+    {
+        $priority = new LanguagePriority([Language::get('de'), Language::get('en')]);
+        $map = TranslationMap::create(['en' => 'English', 'de' => 'Deutsch']);
+
+        $result = $map->pick($priority);
+
+        self::assertSame('Deutsch', $result);
+    }
+
+    public function testPickMultipleTranslations(): void
+    {
+        $map = TranslationMap::create(['en' => 'English', 'de' => 'German', 'es' => 'Spanish', 'fr' => 'French']);
+        $priorityA = new LanguagePriority([Language::get('de'), Language::get('en')]);
+        $priorityB = new LanguagePriority([Language::get('fr'), Language::get('es')]);
+
+        $resultA = $map->pick($priorityA);
+        $resultB = $map->pick($priorityB);
+
+        self::assertSame('German', $resultA);
+        self::assertSame('French', $resultB);
     }
 }

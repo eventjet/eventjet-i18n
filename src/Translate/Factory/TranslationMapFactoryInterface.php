@@ -6,6 +6,9 @@ namespace Eventjet\I18n\Translate\Factory;
 
 use Eventjet\I18n\Translate\TranslationMapInterface;
 
+/**
+ * @deprecated use {@see TranslationMap::create} instead
+ */
 interface TranslationMapFactoryInterface
 {
     /**

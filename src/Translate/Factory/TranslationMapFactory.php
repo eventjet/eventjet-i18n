@@ -14,6 +14,9 @@ use function array_keys;
 use function array_map;
 use function count;
 
+/**
+ * @deprecated use {@see TranslationMap::create} instead
+ */
 class TranslationMapFactory implements TranslationMapFactoryInterface
 {
     /**
