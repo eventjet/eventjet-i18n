@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Language;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 use function assert;
 use function count;
@@ -39,7 +40,11 @@ class LanguagePriority implements LanguagePriorityInterface
 
     public function current(): LanguageInterface
     {
-        return current($this->languages);
+        $current = current($this->languages);
+        if ($current === false) {
+            throw new RuntimeException('Pointer is beyond the end of the elements');
+        }
+        return $current;
     }
 
     public function next(): void

@@ -8,6 +8,7 @@ use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class LanguagePriorityTest extends TestCase
 {
@@ -31,10 +32,12 @@ class LanguagePriorityTest extends TestCase
 
     public function testPrimary(): void
     {
-        $priority = new LanguagePriority([
-            Language::get('de-AT'),
-            Language::get('en-US'),
-        ]);
+        $priority = new LanguagePriority(
+            [
+                Language::get('de-AT'),
+                Language::get('en-US'),
+            ]
+        );
 
         self::assertSame(Language::get('de-AT'), $priority->primary());
     }
@@ -54,5 +57,16 @@ class LanguagePriorityTest extends TestCase
 
         self::assertSame(0, $firstKey);
         self::assertSame(1, $nextKey);
+    }
+
+    public function testCurrentThrowsExceptionIfPointerIsBeyondTheElements(): void
+    {
+        $priority = new LanguagePriority([Language::get('de')]);
+        $priority->next();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Pointer is beyond the end of the elements');
+
+        $priority->current();
     }
 }
