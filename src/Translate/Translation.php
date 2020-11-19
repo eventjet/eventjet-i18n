@@ -6,6 +6,11 @@ namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
+use InvalidArgumentException;
+
+use function gettype;
+use function is_string;
+use function sprintf;
 
 class Translation implements TranslationInterface
 {
@@ -14,8 +19,20 @@ class Translation implements TranslationInterface
     private LanguageInterface $language;
     private string $text;
 
-    public function __construct(LanguageInterface $language, string $string)
+    /**
+     * @param string $string
+     */
+    public function __construct(LanguageInterface $language, $string)
     {
+        if (!is_string($string)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The constructor of %s expected a string as its second argument, but got %s.',
+                    __CLASS__,
+                    gettype($string)
+                )
+            );
+        }
         $this->language = $language;
         $this->text = $string;
     }
@@ -28,12 +45,18 @@ class Translation implements TranslationInterface
         return new self(Language::get($serialized[self::LANGUAGE]), $serialized[self::TEXT]);
     }
 
-    public function getLanguage(): LanguageInterface
+    /**
+     * @return LanguageInterface
+     */
+    public function getLanguage()
     {
         return $this->language;
     }
 
-    public function getText(): string
+    /**
+     * @return string
+     */
+    public function getText()
     {
         return $this->text;
     }

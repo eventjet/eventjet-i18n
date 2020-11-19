@@ -94,12 +94,18 @@ class TranslationMap implements TranslationMapInterface
         return $translation->serialize();
     }
 
-    public function has(LanguageInterface $language): bool
+    /**
+     * @return bool
+     */
+    public function has(LanguageInterface $language)
     {
         return isset($this->translations[(string)$language]);
     }
 
-    public function get(LanguageInterface $language): ?string
+    /**
+     * @return string|null
+     */
+    public function get(LanguageInterface $language)
     {
         if (!isset($this->translations[(string)$language])) {
             return null;
@@ -110,12 +116,15 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, Translation>
      */
-    public function getAll(): array
+    public function getAll()
     {
         return $this->translations;
     }
 
-    public function withTranslation(TranslationInterface $translation): TranslationMapInterface
+    /**
+     * @return TranslationMapInterface
+     */
+    public function withTranslation(TranslationInterface $translation)
     {
         $newMap = clone $this;
         assert($translation instanceof Translation);
@@ -126,7 +135,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         $json = [];
         foreach ($this->translations as $translation) {
@@ -135,7 +144,10 @@ class TranslationMap implements TranslationMapInterface
         return $json;
     }
 
-    public function equals(TranslationMapInterface $other): bool
+    /**
+     * @return bool
+     */
+    public function equals(TranslationMapInterface $other)
     {
         if ($this === $other) {
             return true;
