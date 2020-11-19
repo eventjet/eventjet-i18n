@@ -30,9 +30,25 @@ class LanguageTest extends TestCase
      */
     public function testValidLanguage(string $language): void
     {
-        Language::get($language);
+        $this->expectNotToPerformAssertions();
 
-        self::assertTrue(true);
+        Language::get($language);
+    }
+
+    /**
+     * @dataProvider validLanguageFormats
+     */
+    public function testIsValid(string $language): void
+    {
+        self::assertTrue(Language::isValid($language));
+    }
+
+    /**
+     * @dataProvider invalidLanguageFormats
+     */
+    public function testIsInvalid(string $language): void
+    {
+        self::assertFalse(Language::isValid($language));
     }
 
     /**

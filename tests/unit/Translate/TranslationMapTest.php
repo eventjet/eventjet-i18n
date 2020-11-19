@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
+use function assert;
 
 class TranslationMapTest extends TestCase
 {
@@ -95,7 +96,11 @@ class TranslationMapTest extends TestCase
     }
 
     /**
-     * @return mixed[]
+     * @return array<string|int, array{
+     *     TranslationMapInterface,
+     *     TranslationMapInterface,
+     *     bool,
+     * }>
      */
     public function equalsData(): array
     {
@@ -110,7 +115,11 @@ class TranslationMapTest extends TestCase
         $factory = new TranslationMapFactory();
         $data = array_map(
             static function ($d) use ($factory) {
-                return [$factory->create($d[0]), $factory->create($d[1]), $d[2]];
+                $a = $factory->create($d[0]);
+                $b = $factory->create($d[1]);
+                assert($a !== null);
+                assert($b !== null);
+                return [$a, $b, $d[2]];
             },
             $data
         );
@@ -140,7 +149,7 @@ class TranslationMapTest extends TestCase
     }
 
     /**
-     * @return iterable<array<TranslationMap>>
+     * @return iterable<string, array{TranslationMap}>
      */
     public function serializationData(): iterable
     {
@@ -156,9 +165,10 @@ class TranslationMapTest extends TestCase
             ]
         );
 
+        $german = Language::get('de');
         $modified = $original->withEachModified(
-            static function (string $translation, Language $language): string {
-                if ($language === Language::get('de')) {
+            static function (string $translation, Language $language) use ($german): string {
+                if ($language === $german) {
                     return $translation . ' (Kopie)';
                 }
                 return $translation . ' (copy)';

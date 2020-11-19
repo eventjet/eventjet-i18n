@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Eventjet\I18n\Translate;
 
+use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
@@ -18,11 +19,11 @@ class TranslationMap implements TranslationMapInterface
 {
     private static ?TranslationMapFactory $factory = null;
     private static ?TranslationExtractor $extractor = null;
-    /** @var TranslationInterface[] */
+    /** @var array<string, Translation> */
     private array $translations = [];
 
     /**
-     * @param TranslationInterface[] $translations
+     * @param array<array-key, Translation> $translations
      */
     public function __construct(array $translations)
     {
@@ -49,18 +50,20 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @param array<string, string> $serialized
-     * @return TranslationMap
+     * @param array<array-key, array{language: string, text: string}> $serialized
      */
     public static function deserialize(array $serialized): self
     {
-        $translations = array_map(
-            static function (array $translationData): Translation {
-                return Translation::deserialize($translationData);
-            },
-            $serialized
-        );
+        $translations = array_map([self::class, 'deserializeTranslation'], $serialized);
         return new self($translations);
+    }
+
+    /**
+     * @param array{language: string, text: string} $translationData
+     */
+    private static function deserializeTranslation(array $translationData): Translation
+    {
+        return Translation::deserialize($translationData);
     }
 
     private static function getFactory(): TranslationMapFactory
@@ -84,19 +87,19 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @param LanguageInterface $language
-     * @return bool
+     * @return array{language: string, text: string}
      */
-    public function has(LanguageInterface $language)
+    private static function serializeTranslation(Translation $translation): array
+    {
+        return $translation->serialize();
+    }
+
+    public function has(LanguageInterface $language): bool
     {
         return isset($this->translations[(string)$language]);
     }
 
-    /**
-     * @param LanguageInterface $language
-     * @return string|null
-     */
-    public function get(LanguageInterface $language)
+    public function get(LanguageInterface $language): ?string
     {
         if (!isset($this->translations[(string)$language])) {
             return null;
@@ -105,20 +108,17 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @return TranslationInterface[]
+     * @return array<string, Translation>
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->translations;
     }
 
-    /**
-     * @param TranslationInterface $translation
-     * @return TranslationMapInterface
-     */
-    public function withTranslation(TranslationInterface $translation)
+    public function withTranslation(TranslationInterface $translation): TranslationMapInterface
     {
         $newMap = clone $this;
+        assert($translation instanceof Translation);
         $newMap->translations[(string)$translation->getLanguage()] = $translation;
         return $newMap;
     }
@@ -126,7 +126,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = [];
         foreach ($this->translations as $translation) {
@@ -135,11 +135,7 @@ class TranslationMap implements TranslationMapInterface
         return $json;
     }
 
-    /**
-     * @param TranslationMapInterface $other
-     * @return bool
-     */
-    public function equals(TranslationMapInterface $other)
+    public function equals(TranslationMapInterface $other): bool
     {
         if ($this === $other) {
             return true;
@@ -160,33 +156,27 @@ class TranslationMap implements TranslationMapInterface
     }
 
     /**
-     * @return mixed[]
+     * @return array<string, array{language: string, text: string}>
      */
     public function serialize(): array
     {
-        return array_map(
-            static function (Translation $translation) {
-                return $translation->serialize();
-            },
-            $this->translations
-        );
+        return array_map([self::class, 'serializeTranslation'], $this->translations);
     }
 
     /**
      * Takes a callable with the following signature:
      * function (string $translation, Language $language): string
      *
-     * @param callable(string $translation, LanguageInterface $language): string $modifier
+     * @param callable(string, \Eventjet\I18n\Language\Language): string $modifier
      */
     public function withEachModified(callable $modifier): self
     {
         $modified = clone $this;
         $modified->translations = array_map(
-            static function (Translation $translation) use ($modifier): Translation {
-                return new Translation(
-                    $translation->getLanguage(),
-                    $modifier($translation->getText(), $translation->getLanguage())
-                );
+            static function (TranslationInterface $translation) use ($modifier): Translation {
+                $language = $translation->getLanguage();
+                assert($language instanceof Language);
+                return new Translation($language, $modifier($translation->getText(), $language));
             },
             $this->translations
         );

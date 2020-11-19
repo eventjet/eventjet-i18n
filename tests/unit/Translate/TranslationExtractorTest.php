@@ -6,11 +6,9 @@ namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
-use Eventjet\I18n\Language\LanguagePriorityInterface;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
 use Eventjet\I18n\Translate\TranslationMap;
-use Eventjet\I18n\Translate\TranslationMapInterface;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
@@ -23,15 +21,15 @@ class TranslationExtractorTest extends TestCase
      * @dataProvider extractData
      */
     public function testExtract(
-        TranslationMapInterface $map,
-        LanguagePriorityInterface $priority,
+        TranslationMap $map,
+        LanguagePriority $priority,
         string $expectedReturn
     ): void {
         self::assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
     }
 
     /**
-     * @return array<mixed[]>
+     * @return list<array{TranslationMap, LanguagePriority, string}>
      */
     public function extractData(): array
     {
@@ -69,17 +67,12 @@ class TranslationExtractorTest extends TestCase
     }
 
     /**
-     * @param string[] $priorityData
+     * @param list<string> $priorityData
      */
     private function createPriority(array $priorityData): LanguagePriority
     {
         return new LanguagePriority(
-            array_map(
-                static function ($language) {
-                    return Language::get($language);
-                },
-                $priorityData
-            )
+            array_map(static fn(string $language): Language => Language::get($language), $priorityData)
         );
     }
 
