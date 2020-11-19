@@ -15,6 +15,9 @@ use function array_map;
 use function assert;
 use function count;
 
+/**
+ * @final will be marked final with the next version
+ */
 class TranslationMap implements TranslationMapInterface
 {
     private static ?TranslationMapFactory $factory = null;

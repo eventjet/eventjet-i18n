@@ -14,6 +14,9 @@ use function key;
 use function next;
 use function reset;
 
+/**
+ * @final will be marked final with the next version
+ */
 class LanguagePriority implements LanguagePriorityInterface
 {
     /** @var list<LanguageInterface> */

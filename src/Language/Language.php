@@ -11,6 +11,9 @@ use function sprintf;
 use function strpos;
 use function substr;
 
+/**
+ * @final will be marked final with the next version
+ */
 class Language implements LanguageInterface
 {
     /** @var array<string, Language> */

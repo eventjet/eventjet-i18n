@@ -12,6 +12,9 @@ use function gettype;
 use function is_string;
 use function sprintf;
 
+/**
+ * @final will be marked final with the next version
+ */
 class Translation implements TranslationInterface
 {
     private const LANGUAGE = 'language';

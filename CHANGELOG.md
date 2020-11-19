@@ -14,6 +14,13 @@ File automatically generated with [phly/keep-a-changelog](https://github.com/phl
 ### Changed
 
 - [#23](https://github.com/eventjet/eventjet-i18n/pull/23) changes minimum PHP version to 7.4 and adds support for PHP 8.0
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) marks the following classes as `final` in the docblock:
+  - `\Eventjet\I18n\Language\Language`
+  - `\Eventjet\I18n\Language\LanguagePriority`
+  - `\Eventjet\I18n\Translate\Translation`
+  - `\Eventjet\I18n\Translate\TranslationMap`
+  
+  They will be `final` in the next major version. 
 
 ### Deprecated
 
