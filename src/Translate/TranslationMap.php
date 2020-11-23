@@ -81,12 +81,10 @@ class TranslationMap implements TranslationMapInterface
 
     private static function getExtractor(): TranslationExtractor
     {
-        if (self::$extractor !== null) {
-            return self::$extractor;
+        if (self::$extractor === null) {
+            self::$extractor = new TranslationExtractor();
         }
-        $extractor = new TranslationExtractor();
-        self::$extractor = $extractor;
-        return $extractor;
+        return self::$extractor;
     }
 
     /**

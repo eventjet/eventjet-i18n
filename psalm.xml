@@ -16,8 +16,8 @@
     </projectFiles>
 
     <issueHandlers>
-        <DeprecatedClass errorLevel="suppress"/>
-        <DeprecatedInterface errorLevel="suppress"/>
+        <DeprecatedClass errorLevel="info"/>
+        <DeprecatedInterface errorLevel="info"/>
     </issueHandlers>
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
