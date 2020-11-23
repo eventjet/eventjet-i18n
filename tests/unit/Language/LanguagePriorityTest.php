@@ -8,6 +8,7 @@ use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class LanguagePriorityTest extends TestCase
 {
@@ -18,9 +19,9 @@ class LanguagePriorityTest extends TestCase
 
         $all = $priority->getAll();
 
-        $this->assertCount(2, $all);
-        $this->assertEquals($all[0], $languages[0]);
-        $this->assertEquals($all[1], $languages[1]);
+        self::assertCount(2, $all);
+        self::assertEquals($all[0], $languages[0]);
+        self::assertEquals($all[1], $languages[1]);
     }
 
     public function testNoLanguages(): void
@@ -31,26 +32,41 @@ class LanguagePriorityTest extends TestCase
 
     public function testPrimary(): void
     {
-        $priority = new LanguagePriority([
-            Language::get('de-AT'),
-            Language::get('en-US'),
-        ]);
+        $priority = new LanguagePriority(
+            [
+                Language::get('de-AT'),
+                Language::get('en-US'),
+            ]
+        );
 
-        $this->assertSame(Language::get('de-AT'), $priority->primary());
+        self::assertSame(Language::get('de-AT'), $priority->primary());
     }
 
     public function testKey(): void
     {
-        $priority = new LanguagePriority([
-            Language::get('de-AT'),
-            Language::get('en-US'),
-        ]);
+        $priority = new LanguagePriority(
+            [
+                Language::get('de-AT'),
+                Language::get('en-US'),
+            ]
+        );
 
         $firstKey = $priority->key();
         $priority->next();
         $nextKey = $priority->key();
 
-        $this->assertSame(0, $firstKey);
-        $this->assertSame(1, $nextKey);
+        self::assertSame(0, $firstKey);
+        self::assertSame(1, $nextKey);
+    }
+
+    public function testCurrentThrowsExceptionIfPointerIsBeyondTheElements(): void
+    {
+        $priority = new LanguagePriority([Language::get('de')]);
+        $priority->next();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Pointer is beyond the end of the elements');
+
+        $priority->current();
     }
 }

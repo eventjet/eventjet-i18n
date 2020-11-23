@@ -6,32 +6,30 @@ namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
-use Eventjet\I18n\Language\LanguagePriorityInterface;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
 use Eventjet\I18n\Translate\TranslationMap;
-use Eventjet\I18n\Translate\TranslationMapInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+
+use function array_map;
 
 class TranslationExtractorTest extends TestCase
 {
-    /** @var TranslationExtractor */
-    private $languageExtractor;
+    private TranslationExtractor $languageExtractor;
 
     /**
      * @dataProvider extractData
      */
     public function testExtract(
-        TranslationMapInterface $map,
-        LanguagePriorityInterface $priority,
+        TranslationMap $map,
+        LanguagePriority $priority,
         string $expectedReturn
     ): void {
-        $this->assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
+        self::assertEquals($expectedReturn, $this->languageExtractor->extract($map, $priority));
     }
 
     /**
-     * @return array<mixed[]>
+     * @return list<array{TranslationMap, LanguagePriority, string}>
      */
     public function extractData(): array
     {
@@ -58,9 +56,8 @@ class TranslationExtractorTest extends TestCase
 
     /**
      * @param array<string, string> $mapData
-     * @return MockObject|TranslationMap
      */
-    private function createTranslationMap(array $mapData)
+    private function createTranslationMap(array $mapData): TranslationMap
     {
         $translations = [];
         foreach ($mapData as $language => $string) {
@@ -70,17 +67,12 @@ class TranslationExtractorTest extends TestCase
     }
 
     /**
-     * @param string[] $priorityData
+     * @param list<string> $priorityData
      */
     private function createPriority(array $priorityData): LanguagePriority
     {
         return new LanguagePriority(
-            array_map(
-                static function ($language) {
-                    return Language::get($language);
-                },
-                $priorityData
-            )
+            array_map(static fn(string $language): Language => Language::get($language), $priorityData)
         );
     }
 

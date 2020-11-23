@@ -5,16 +5,25 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Language;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 use function assert;
+use function count;
+use function current;
+use function key;
+use function next;
+use function reset;
 
+/**
+ * @final will be marked final with the next version
+ */
 class LanguagePriority implements LanguagePriorityInterface
 {
-    /** @var array<int, LanguageInterface> */
-    private $languages;
+    /** @var list<LanguageInterface> */
+    private array $languages;
 
     /**
-     * @param array<int, LanguageInterface> $languages
+     * @param list<LanguageInterface> $languages
      */
     public function __construct(array $languages)
     {
@@ -25,7 +34,7 @@ class LanguagePriority implements LanguagePriorityInterface
     }
 
     /**
-     * @return LanguageInterface[]
+     * @return list<LanguageInterface>
      */
     public function getAll()
     {
@@ -34,7 +43,11 @@ class LanguagePriority implements LanguagePriorityInterface
 
     public function current(): LanguageInterface
     {
-        return current($this->languages);
+        $current = current($this->languages);
+        if ($current === false) {
+            throw new RuntimeException('Pointer is beyond the end of the elements');
+        }
+        return $current;
     }
 
     public function next(): void
@@ -52,7 +65,7 @@ class LanguagePriority implements LanguagePriorityInterface
     public function valid(): bool
     {
         $key = key($this->languages);
-        return ($key !== null && $key !== false);
+        return ($key !== null);
     }
 
     public function rewind(): void

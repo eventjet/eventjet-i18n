@@ -25,7 +25,7 @@ interface TranslationMapInterface extends JsonSerializable
     public function get(LanguageInterface $language);
 
     /**
-     * @return Translation[]
+     * @return TranslationInterface[]
      */
     public function getAll();
 

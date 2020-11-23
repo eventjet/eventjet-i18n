@@ -9,6 +9,14 @@ use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
 
+use function array_filter;
+use function array_keys;
+use function array_map;
+use function count;
+
+/**
+ * @deprecated use {@see TranslationMap::create} instead
+ */
 class TranslationMapFactory implements TranslationMapFactoryInterface
 {
     /**

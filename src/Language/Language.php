@@ -6,14 +6,20 @@ namespace Eventjet\I18n\Language;
 
 use Eventjet\I18n\Exception\InvalidLanguageFormatException;
 
+use function preg_match;
+use function sprintf;
+use function strpos;
+use function substr;
+
+/**
+ * @final will be marked final with the next version
+ */
 class Language implements LanguageInterface
 {
-    /** @var Language[] */
-    private static $pool = [];
-    /** @var string */
-    private $language;
-    /** @var bool */
-    private $hasRegion;
+    /** @var array<string, Language> */
+    private static array $pool = [];
+    private string $language;
+    private ?bool $hasRegion = null;
 
     /**
      * @param string $language

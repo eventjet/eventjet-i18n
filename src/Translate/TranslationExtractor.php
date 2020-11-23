@@ -9,12 +9,15 @@ use Eventjet\I18n\Language\LanguageInterface;
 use Eventjet\I18n\Language\LanguagePriorityInterface;
 
 use function assert;
+use function current;
+use function reset;
 
+/**
+ * @deprecated use {@see TranslationMap::pick} instead
+ */
 class TranslationExtractor implements TranslationExtractorInterface
 {
     /**
-     * @param TranslationMapInterface $map
-     * @param LanguagePriorityInterface|LanguageInterface[] $priorities
      * @return string
      */
     public function extract(TranslationMapInterface $map, LanguagePriorityInterface $priorities)

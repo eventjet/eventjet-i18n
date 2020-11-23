@@ -24,7 +24,7 @@ class TranslationTest extends TestCase
 
         $returnedLanguage = $translation->getLanguage();
 
-        $this->assertSame($language, $returnedLanguage);
+        self::assertSame($language, $returnedLanguage);
     }
 
     public function testGetText(): void
@@ -34,6 +34,25 @@ class TranslationTest extends TestCase
 
         $returnedText = $translation->getText();
 
-        $this->assertEquals($text, $returnedText);
+        self::assertEquals($text, $returnedText);
+    }
+
+    /**
+     * @dataProvider hasRegionData
+     */
+    public function testHasRegion(string $code, bool $expected): void
+    {
+        $language = Language::get($code);
+
+        self::assertSame($expected, $language->hasRegion());
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public function hasRegionData(): iterable
+    {
+        yield 'Language only' => ['de', false];
+        yield 'With region' => ['de-CH', true];
     }
 }

@@ -8,19 +8,21 @@ use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
 
+use function gettype;
+use function is_string;
+use function sprintf;
+
+/**
+ * @final will be marked final with the next version
+ */
 class Translation implements TranslationInterface
 {
     private const LANGUAGE = 'language';
     private const TEXT = 'text';
-    /** @var LanguageInterface */
-    private $language;
-    /** @var string */
-    private $text;
+    private LanguageInterface $language;
+    private string $text;
 
     /**
-     *
-     *
-     * @param LanguageInterface $language
      * @param string $string
      */
     public function __construct(LanguageInterface $language, $string)
@@ -39,7 +41,7 @@ class Translation implements TranslationInterface
     }
 
     /**
-     * @param array<string, string> $serialized
+     * @param array{language: string, text: string} $serialized
      */
     public static function deserialize(array $serialized): self
     {
@@ -63,7 +65,7 @@ class Translation implements TranslationInterface
     }
 
     /**
-     * @return mixed[]
+     * @return array{language: string, text: string}
      */
     public function serialize(): array
     {

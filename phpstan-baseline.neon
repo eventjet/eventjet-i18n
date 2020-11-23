@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#2 \\$string of class Eventjet\\\\I18n\\\\Translate\\\\Translation constructor expects string, true given\\.$#"
+			count: 1
+			path: tests/unit/Translate/TranslationTest.php
+

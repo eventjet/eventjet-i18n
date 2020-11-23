@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Language\LanguagePriority;
+use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationInterface;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
-use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+
+use function array_map;
+use function assert;
 
 class TranslationMapTest extends TestCase
 {
@@ -20,7 +24,7 @@ class TranslationMapTest extends TestCase
     {
         $map = new TranslationMap([new Translation(Language::get('de'), 'Test')]);
 
-        $this->assertFalse($map->has(Language::get('en')));
+        self::assertFalse($map->has(Language::get('en')));
     }
 
     public function testWithTranslation(): void
@@ -31,8 +35,8 @@ class TranslationMapTest extends TestCase
         $english = 'English';
         $newMap = $map->withTranslation(new Translation($en, $english));
 
-        $this->assertEquals($english, $newMap->get($en));
-        $this->assertFalse($map->has($en));
+        self::assertEquals($english, $newMap->get($en));
+        self::assertFalse($map->has($en));
     }
 
     public function testWithTranslationOverridesExistingTranslation(): void
@@ -42,8 +46,8 @@ class TranslationMapTest extends TestCase
 
         $newMap = $map->withTranslation(new Translation($de, 'Overridden'));
 
-        $this->assertEquals('Overridden', $newMap->get($de));
-        $this->assertEquals('Original', $map->get($de));
+        self::assertEquals('Overridden', $newMap->get($de));
+        self::assertEquals('Original', $map->get($de));
     }
 
     public function testGetAllReturnsArrayOfTranslations(): void
@@ -58,7 +62,7 @@ class TranslationMapTest extends TestCase
 
         $translations = $map->getAll();
 
-        $this->assertContainsOnlyInstancesOf(TranslationInterface::class, $translations);
+        self::assertContainsOnlyInstancesOf(TranslationInterface::class, $translations);
     }
 
     public function testEmptyMapThrowsException(): void
@@ -72,7 +76,7 @@ class TranslationMapTest extends TestCase
     {
         $map = new TranslationMap([new Translation(Language::get('de'), 'Test')]);
 
-        $this->assertNull($map->get(Language::get('en')));
+        self::assertNull($map->get(Language::get('en')));
     }
 
     public function testJsonSerialize(): void
@@ -86,13 +90,17 @@ class TranslationMapTest extends TestCase
 
         $json = $map->jsonSerialize();
 
-        $this->assertCount(2, $json);
-        $this->assertEquals($json['en'], 'My Test');
-        $this->assertEquals($json['de'], 'Mein Test');
+        self::assertCount(2, $json);
+        self::assertEquals($json['en'], 'My Test');
+        self::assertEquals($json['de'], 'Mein Test');
     }
 
     /**
-     * @return mixed[]
+     * @return array<string|int, array{
+     *     TranslationMapInterface,
+     *     TranslationMapInterface,
+     *     bool,
+     * }>
      */
     public function equalsData(): array
     {
@@ -107,7 +115,11 @@ class TranslationMapTest extends TestCase
         $factory = new TranslationMapFactory();
         $data = array_map(
             static function ($d) use ($factory) {
-                return [$factory->create($d[0]), $factory->create($d[1]), $d[2]];
+                $a = $factory->create($d[0]);
+                $b = $factory->create($d[1]);
+                assert($a !== null);
+                assert($b !== null);
+                return [$a, $b, $d[2]];
             },
             $data
         );
@@ -120,8 +132,8 @@ class TranslationMapTest extends TestCase
      */
     public function testEquals(TranslationMapInterface $a, TranslationMapInterface $b, bool $equal): void
     {
-        $this->assertEquals($equal, $a->equals($b));
-        $this->assertEquals($equal, $b->equals($a));
+        self::assertEquals($equal, $a->equals($b));
+        self::assertEquals($equal, $b->equals($a));
     }
 
     /**
@@ -136,7 +148,10 @@ class TranslationMapTest extends TestCase
         self::assertTrue($deserialized->equals($map));
     }
 
-    public function serializationData(): Generator
+    /**
+     * @return iterable<string, array{TranslationMap}>
+     */
+    public function serializationData(): iterable
     {
         yield 'Single translation' => [new TranslationMap([new Translation(Language::get('en'), 'Foo')])];
     }
@@ -150,9 +165,10 @@ class TranslationMapTest extends TestCase
             ]
         );
 
+        $german = Language::get('de');
         $modified = $original->withEachModified(
-            static function (string $translation, Language $language): string {
-                if ($language === Language::get('de')) {
+            static function (string $translation, Language $language) use ($german): string {
+                if ($language === $german) {
                     return $translation . ' (Kopie)';
                 }
                 return $translation . ' (copy)';
@@ -161,5 +177,45 @@ class TranslationMapTest extends TestCase
 
         self::assertEquals('Mein String (Kopie)', $modified->get(Language::get('de')));
         self::assertEquals('My String (copy)', $modified->get(Language::get('en')));
+    }
+
+    public function testCreateMap(): void
+    {
+        $mapData = ['de' => 'Foo'];
+
+        $map = TranslationMap::create($mapData);
+
+        self::assertSame('Foo', $map->get(Language::get('de')));
+        self::assertCount(1, $map->getAll());
+    }
+
+    public function testCreateMapThrowsExceptionWhenMapDataIsInvalid(): void
+    {
+        $this->expectException(InvalidTranslationMapDataException::class);
+
+        TranslationMap::create([]);
+    }
+
+    public function testPickTranslation(): void
+    {
+        $priority = new LanguagePriority([Language::get('de'), Language::get('en')]);
+        $map = TranslationMap::create(['en' => 'English', 'de' => 'Deutsch']);
+
+        $result = $map->pick($priority);
+
+        self::assertSame('Deutsch', $result);
+    }
+
+    public function testPickMultipleTranslations(): void
+    {
+        $map = TranslationMap::create(['en' => 'English', 'de' => 'German', 'es' => 'Spanish', 'fr' => 'French']);
+        $priorityA = new LanguagePriority([Language::get('de'), Language::get('en')]);
+        $priorityB = new LanguagePriority([Language::get('fr'), Language::get('es')]);
+
+        $resultA = $map->pick($priorityA);
+        $resultB = $map->pick($priorityB);
+
+        self::assertSame('German', $resultA);
+        self::assertSame('French', $resultB);
     }
 }

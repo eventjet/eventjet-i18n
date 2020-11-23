@@ -12,7 +12,7 @@ class LanguageTest extends TestCase
 {
     public function testGetReturnsTheSameInstanceForTheSameString(): void
     {
-        $this->assertSame(Language::get('de'), Language::get('de'));
+        self::assertSame(Language::get('de'), Language::get('de'));
     }
 
     /**
@@ -30,9 +30,25 @@ class LanguageTest extends TestCase
      */
     public function testValidLanguage(string $language): void
     {
-        Language::get($language);
+        $this->expectNotToPerformAssertions();
 
-        $this->assertTrue(true);
+        Language::get($language);
+    }
+
+    /**
+     * @dataProvider validLanguageFormats
+     */
+    public function testIsValid(string $language): void
+    {
+        self::assertTrue(Language::isValid($language));
+    }
+
+    /**
+     * @dataProvider invalidLanguageFormats
+     */
+    public function testIsInvalid(string $language): void
+    {
+        self::assertFalse(Language::isValid($language));
     }
 
     /**
@@ -55,6 +71,6 @@ class LanguageTest extends TestCase
     {
         $language = Language::get('de');
 
-        $this->assertEquals('de', $language->__toString());
+        self::assertEquals('de', $language->__toString());
     }
 }
