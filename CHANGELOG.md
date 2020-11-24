@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
+## 2.0.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#24](https://github.com/eventjet/eventjet-i18n/pull/24) marks the following classes as `final`.
+  They cannot be extended anymore:
+  - `\Eventjet\I18n\Language\Language`
+  - `\Eventjet\I18n\Language\LanguagePriority`
+  - `\Eventjet\I18n\Translate\Translation`
+  - `\Eventjet\I18n\Translate\TranslationMap`
+
+- [#24](https://github.com/eventjet/eventjet-i18n/pull/24) adds type hints and return types in all methods.
+
+- [#24](https://github.com/eventjet/eventjet-i18n/pull/24) changes the signature of
+  `\Eventjet\I18n\Translate\TranslatorInterface::translate` to consume a `LanguagePriority` as its second parameter,
+  instead of the now removed `LanguagePriorityInterface`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) removes the following classes/interfaces:
+  - `\Eventjet\I18n\Language\LanguageInterface`
+  - `\Eventjet\I18n\Language\LanguagePrioriry` (typo)
+  - `\Eventjet\I18n\Language\LanguagePriorityInterface`
+  - `\Eventjet\I18n\Translate\TranslationExtractor`
+  - `\Eventjet\I18n\Translate\TranslationExtractorInterface`
+  - `\Eventjet\I18n\Translate\TranslationInterface`
+  - `\Eventjet\I18n\Translate\TranslationMapInterface`
+  - `\Eventjet\I18n\Translate\Factory\TranslationMapFactory`
+  - `\Eventjet\I18n\Translate\Factory\TranslationMapFactoryInterface`
+
+### Fixed
+
+- Nothing.
+
 ## 1.7.0 - 2020-11-23
 
 ### Added

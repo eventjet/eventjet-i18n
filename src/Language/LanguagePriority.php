@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Language;
 
 use InvalidArgumentException;
+use Iterator;
 use RuntimeException;
 
 use function assert;
@@ -15,15 +16,15 @@ use function next;
 use function reset;
 
 /**
- * @final will be marked final with the next version
+ * @implements Iterator<Language>
  */
-class LanguagePriority implements LanguagePriorityInterface
+final class LanguagePriority implements Iterator
 {
-    /** @var list<LanguageInterface> */
+    /** @var list<Language> */
     private array $languages;
 
     /**
-     * @param list<LanguageInterface> $languages
+     * @param list<Language> $languages
      */
     public function __construct(array $languages)
     {
@@ -34,14 +35,14 @@ class LanguagePriority implements LanguagePriorityInterface
     }
 
     /**
-     * @return list<LanguageInterface>
+     * @return list<Language>
      */
     public function getAll()
     {
         return $this->languages;
     }
 
-    public function current(): LanguageInterface
+    public function current(): Language
     {
         $current = current($this->languages);
         if ($current === false) {
@@ -73,10 +74,7 @@ class LanguagePriority implements LanguagePriorityInterface
         reset($this->languages);
     }
 
-    /**
-     * @return LanguageInterface
-     */
-    public function primary()
+    public function primary(): Language
     {
         $primary = reset($this->languages);
         assert($primary !== false);

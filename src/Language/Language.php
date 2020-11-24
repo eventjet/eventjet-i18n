@@ -11,20 +11,14 @@ use function sprintf;
 use function strpos;
 use function substr;
 
-/**
- * @final will be marked final with the next version
- */
-class Language implements LanguageInterface
+final class Language
 {
     /** @var array<string, Language> */
     private static array $pool = [];
     private string $language;
     private ?bool $hasRegion = null;
 
-    /**
-     * @param string $language
-     */
-    private function __construct($language)
+    private function __construct(string $language)
     {
         if (!self::isValid($language)) {
             throw new InvalidLanguageFormatException(sprintf('Invalid language "%s".', $language));
@@ -32,39 +26,12 @@ class Language implements LanguageInterface
         $this->language = $language;
     }
 
-    /**
-     * @param string $language
-     * @return bool
-     */
-    public static function isValid($language)
+    public static function isValid(string $language): bool
     {
         return preg_match('/^([a-z]{2}(-[A-Z]{2})?)$/', $language) === 1;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasRegion()
-    {
-        if ($this->hasRegion === null) {
-            $this->hasRegion = strpos($this->language, '-') !== false;
-        }
-        return $this->hasRegion;
-    }
-
-    /**
-     * @return Language
-     */
-    public function getBaseLanguage()
-    {
-        return self::get(substr($this->language, 0, 2));
-    }
-
-    /**
-     * @param string $language
-     * @return Language
-     */
-    public static function get($language)
+    public static function get(string $language): Language
     {
         if (!isset(self::$pool[$language])) {
             self::$pool[$language] = new self($language);
@@ -72,10 +39,20 @@ class Language implements LanguageInterface
         return self::$pool[$language];
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function hasRegion(): ?bool
+    {
+        if ($this->hasRegion === null) {
+            $this->hasRegion = strpos($this->language, '-') !== false;
+        }
+        return $this->hasRegion;
+    }
+
+    public function getBaseLanguage(): Language
+    {
+        return self::get(substr($this->language, 0, 2));
+    }
+
+    public function __toString(): string
     {
         return $this->language;
     }

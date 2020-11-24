@@ -6,17 +6,10 @@ namespace EventjetTest\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Translation;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class TranslationTest extends TestCase
 {
-    public function testExceptionIsThrownIfTextIsNotAString(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Translation(Language::get('de'), true);
-    }
-
     public function testGetLanguage(): void
     {
         $language = Language::get('de');
