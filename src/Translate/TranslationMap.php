@@ -5,23 +5,20 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
-use Eventjet\I18n\Language\LanguageInterface;
 use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
-use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use InvalidArgumentException;
+use JsonSerializable;
 
+use function array_filter;
+use function array_keys;
 use function array_map;
 use function assert;
 use function count;
+use function reset;
 
-/**
- * @final will be marked final with the next version
- */
-class TranslationMap implements TranslationMapInterface
+final class TranslationMap implements JsonSerializable
 {
-    private static ?TranslationMapFactory $factory = null;
-    private static ?TranslationExtractor $extractor = null;
     /** @var array<string, Translation> */
     private array $translations = [];
 
@@ -43,13 +40,17 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function create(array $mapData): self
     {
-        $factory = self::getFactory();
-        $map = $factory->create($mapData);
-        if ($map === null) {
+        $mapData = array_map('trim', $mapData);
+        $mapData = array_filter($mapData, static fn(string $text) => $text !== '');
+        if (count($mapData) === 0) {
             throw new InvalidTranslationMapDataException('Given translation map data is invalid');
         }
-        assert($map instanceof self);
-        return $map;
+        $translations = array_map(
+            static fn($text, $lang) => new Translation(Language::get($lang), $text),
+            $mapData,
+            array_keys($mapData)
+        );
+        return new TranslationMap($translations);
     }
 
     /**
@@ -69,24 +70,6 @@ class TranslationMap implements TranslationMapInterface
         return Translation::deserialize($translationData);
     }
 
-    private static function getFactory(): TranslationMapFactory
-    {
-        if (self::$factory !== null) {
-            return self::$factory;
-        }
-        $factory = new TranslationMapFactory();
-        self::$factory = $factory;
-        return $factory;
-    }
-
-    private static function getExtractor(): TranslationExtractor
-    {
-        if (self::$extractor === null) {
-            self::$extractor = new TranslationExtractor();
-        }
-        return self::$extractor;
-    }
-
     /**
      * @return array{language: string, text: string}
      */
@@ -95,18 +78,12 @@ class TranslationMap implements TranslationMapInterface
         return $translation->serialize();
     }
 
-    /**
-     * @return bool
-     */
-    public function has(LanguageInterface $language)
+    public function has(Language $language): bool
     {
         return isset($this->translations[(string)$language]);
     }
 
-    /**
-     * @return string|null
-     */
-    public function get(LanguageInterface $language)
+    public function get(Language $language): ?string
     {
         if (!isset($this->translations[(string)$language])) {
             return null;
@@ -117,18 +94,14 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, Translation>
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->translations;
     }
 
-    /**
-     * @return TranslationMapInterface
-     */
-    public function withTranslation(TranslationInterface $translation)
+    public function withTranslation(Translation $translation): self
     {
         $newMap = clone $this;
-        assert($translation instanceof Translation);
         $newMap->translations[(string)$translation->getLanguage()] = $translation;
         return $newMap;
     }
@@ -136,7 +109,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = [];
         foreach ($this->translations as $translation) {
@@ -145,10 +118,7 @@ class TranslationMap implements TranslationMapInterface
         return $json;
     }
 
-    /**
-     * @return bool
-     */
-    public function equals(TranslationMapInterface $other)
+    public function equals(self $other): bool
     {
         if ($this === $other) {
             return true;
@@ -186,9 +156,8 @@ class TranslationMap implements TranslationMapInterface
     {
         $modified = clone $this;
         $modified->translations = array_map(
-            static function (TranslationInterface $translation) use ($modifier): Translation {
+            static function (Translation $translation) use ($modifier): Translation {
                 $language = $translation->getLanguage();
-                assert($language instanceof Language);
                 return new Translation($language, $modifier($translation->getText(), $language));
             },
             $this->translations
@@ -198,7 +167,40 @@ class TranslationMap implements TranslationMapInterface
 
     public function pick(LanguagePriority $languages): string
     {
-        $extractor = self::getExtractor();
-        return $extractor->extract($this, $languages);
+        $string = $this->pickFromPriority($languages);
+        return $string ?? $this->pickFromFallbacks();
+    }
+
+    private function pickFromPriority(LanguagePriority $priorities): ?string
+    {
+        foreach ($priorities as $language) {
+            if ($this->has($language)) {
+                return $this->get($language);
+            }
+            if (!$language->hasRegion()) {
+                continue;
+            }
+            $baseLanguage = $language->getBaseLanguage();
+            if ($this->has($baseLanguage)) {
+                return $this->get($baseLanguage);
+            }
+        }
+        return null;
+    }
+
+    private function pickFromFallbacks(): string
+    {
+        $english = Language::get('en');
+        if ($this->has($english)) {
+            $return = $this->get($english);
+            assert($return !== null);
+            return $return;
+        }
+        $translations = $this->getAll();
+        /** @var Translation $translation */
+        $translation = reset($translations);
+        $return = $this->get($translation->getLanguage());
+        assert($return !== null);
+        return $return;
     }
 }

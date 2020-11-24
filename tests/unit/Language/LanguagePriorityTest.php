@@ -69,4 +69,19 @@ class LanguagePriorityTest extends TestCase
 
         $priority->current();
     }
+
+    public function testRewindResetsInternalPointer(): void
+    {
+        $languages = new LanguagePriority([Language::get('de'), Language::get('en'), Language::get('fr')]);
+
+        $first = $languages->current();
+        $languages->next();
+        $second = $languages->current();
+        $languages->rewind();
+        $firstAgain = $languages->current();
+
+        self::assertSame((string)$first, (string)$firstAgain);
+        self::assertNotSame((string)$first, (string)$second);
+        self::assertNotSame((string)$second, (string)$firstAgain);
+    }
 }

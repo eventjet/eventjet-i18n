@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset>
-    <rule ref="Eventjet"/>
+    <rule ref="EventjetStrict"/>
     <file>src</file>
     <file>tests</file>
 </ruleset>
