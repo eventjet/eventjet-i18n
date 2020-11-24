@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
+use function spl_object_id;
 
 class TranslationMapTest extends TestCase
 {
@@ -170,7 +171,20 @@ class TranslationMapTest extends TestCase
 
         self::assertEquals('Mein String (Kopie)', $modified->get(Language::get('de')));
         self::assertEquals('My String (copy)', $modified->get(Language::get('en')));
-        self::assertNotSame($original, $modified);
+    }
+
+    public function testWithEachModifiedIsImmutable(): void
+    {
+        $original = new TranslationMap(
+            [
+                new Translation(Language::get('en'), 'My String'),
+                new Translation(Language::get('de'), 'Mein String'),
+            ]
+        );
+
+        $modified = $original->withEachModified(fn(string $text) => $text);
+
+        self::assertNotSame(spl_object_id($original), spl_object_id($modified));
     }
 
     public function testCreateMap(): void
@@ -235,6 +249,7 @@ class TranslationMapTest extends TestCase
     public function testTextsAreTrimmed(): void
     {
         $map = TranslationMap::create(['de' => ' de', 'en' => 'en ', 'es' => ' es ', 'it' => "it\n"]);
+
         foreach ($map->getAll() as $translation) {
             self::assertEquals((string)$translation->getLanguage(), $translation->getText());
         }
@@ -243,6 +258,7 @@ class TranslationMapTest extends TestCase
     public function testEmptyTextsAreRemoved(): void
     {
         $map = TranslationMap::create(['de' => 'Test', 'en' => '', 'es' => ' ', 'it' => "\n"]);
+
         self::assertCount(1, $map->getAll());
     }
 
@@ -270,9 +286,9 @@ class TranslationMapTest extends TestCase
     }
 
     /**
-     * @dataProvider extractData
+     * @dataProvider pickData
      */
-    public function testExtract(
+    public function testPick(
         TranslationMap $map,
         LanguagePriority $priority,
         string $expectedReturn
@@ -283,7 +299,7 @@ class TranslationMapTest extends TestCase
     /**
      * @return list<array{TranslationMap, LanguagePriority, string}>
      */
-    public function extractData(): array
+    public function pickData(): array
     {
         $data = [
             [['de' => 'Deutsch'], ['de'], 'Deutsch'],
