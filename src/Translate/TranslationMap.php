@@ -15,7 +15,6 @@ use function array_keys;
 use function array_map;
 use function assert;
 use function count;
-use function current;
 use function reset;
 
 final class TranslationMap implements JsonSerializable
@@ -198,9 +197,8 @@ final class TranslationMap implements JsonSerializable
             return $return;
         }
         $translations = $this->getAll();
-        reset($translations);
         /** @var Translation $translation */
-        $translation = current($translations);
+        $translation = reset($translations);
         $return = $this->get($translation->getLanguage());
         assert($return !== null);
         return $return;

@@ -76,8 +76,8 @@ final class LanguagePriority implements Iterator
 
     public function primary(): Language
     {
+        /** @var Language $primary */
         $primary = reset($this->languages);
-        assert($primary !== false);
         return $primary;
     }
 }

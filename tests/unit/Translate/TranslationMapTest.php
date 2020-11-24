@@ -170,6 +170,7 @@ class TranslationMapTest extends TestCase
 
         self::assertEquals('Mein String (Kopie)', $modified->get(Language::get('de')));
         self::assertEquals('My String (copy)', $modified->get(Language::get('en')));
+        self::assertNotSame($original, $modified);
     }
 
     public function testCreateMap(): void
@@ -291,6 +292,7 @@ class TranslationMapTest extends TestCase
             [['es' => 'Espanol', 'de' => 'Deutsch'], ['de-AT'], 'Deutsch'],
             [['de' => 'Deutsch', 'en' => 'English'], ['es'], 'English'],
             [['de' => 'Deutsch'], ['es'], 'Deutsch'],
+            [['es' => 'Spanish', 'de' => 'Deutsch'], ['fr', 'de-DE', 'es'], 'Deutsch'],
         ];
         $data = array_map(
             function (array $item) {
