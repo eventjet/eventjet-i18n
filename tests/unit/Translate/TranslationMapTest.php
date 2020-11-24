@@ -13,6 +13,8 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
+use function assert;
+use function reset;
 use function spl_object_id;
 
 class TranslationMapTest extends TestCase
@@ -148,6 +150,20 @@ class TranslationMapTest extends TestCase
     public function serializationData(): iterable
     {
         yield 'Single translation' => [new TranslationMap([new Translation(Language::get('en'), 'Foo')])];
+        yield 'Multiple translation' => [TranslationMap::create(['de' => 'Foo', 'en' => 'EnFoo'])];
+    }
+
+    public function testDeserializeIgnoresWrongLanguageInArrayKey(): void
+    {
+        $serialized = ['de' => ['language' => 'en', 'text' => 'Foo']];
+
+        $deserialized = TranslationMap::deserialize($serialized);
+
+        $onlyTranslation = $deserialized->getAll();
+        self::assertCount(1, $onlyTranslation);
+        $onlyTranslation = reset($onlyTranslation);
+        assert($onlyTranslation instanceof Translation);
+        self::assertSame('en', (string)$onlyTranslation->getLanguage());
     }
 
     public function testWithEachModified(): void
