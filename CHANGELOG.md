@@ -31,7 +31,7 @@ File automatically generated with [phly/keep-a-changelog](https://github.com/phl
 
 ### Removed
 
-- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) removes the following classes/interfaces:
+- [#24](https://github.com/eventjet/eventjet-i18n/pull/24) removes the following classes/interfaces:
   - `\Eventjet\I18n\Language\LanguageInterface`
   - `\Eventjet\I18n\Language\LanguagePrioriry` (typo)
   - `\Eventjet\I18n\Language\LanguagePriorityInterface`
