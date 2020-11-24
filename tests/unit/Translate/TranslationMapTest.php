@@ -155,7 +155,9 @@ class TranslationMapTest extends TestCase
 
     public function testDeserializeIgnoresWrongLanguageInArrayKey(): void
     {
-        $serialized = ['de' => ['language' => 'en', 'text' => 'Foo']];
+        $map = TranslationMap::create(['en' => 'Foo']);
+        $serialized = $map->serialize();
+        $serialized = ['de' => $serialized['en']];
 
         $deserialized = TranslationMap::deserialize($serialized);
 
@@ -191,12 +193,7 @@ class TranslationMapTest extends TestCase
 
     public function testWithEachModifiedIsImmutable(): void
     {
-        $original = new TranslationMap(
-            [
-                new Translation(Language::get('en'), 'My String'),
-                new Translation(Language::get('de'), 'Mein String'),
-            ]
-        );
+        $original = TranslationMap::create(['en' => 'My String', 'de' => 'Mein String']);
 
         $modified = $original->withEachModified(fn(string $text) => $text);
 
