@@ -39,7 +39,7 @@ final class Language
         return self::$pool[$language];
     }
 
-    public function hasRegion(): ?bool
+    public function hasRegion(): bool
     {
         if ($this->hasRegion === null) {
             $this->hasRegion = strpos($this->language, '-') !== false;
