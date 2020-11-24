@@ -99,7 +99,7 @@ final class TranslationMap implements JsonSerializable
         return $this->translations;
     }
 
-    public function withTranslation(Translation $translation): TranslationMap
+    public function withTranslation(Translation $translation): self
     {
         $newMap = clone $this;
         $newMap->translations[(string)$translation->getLanguage()] = $translation;
@@ -118,7 +118,7 @@ final class TranslationMap implements JsonSerializable
         return $json;
     }
 
-    public function equals(TranslationMap $other): bool
+    public function equals(self $other): bool
     {
         if ($this === $other) {
             return true;
