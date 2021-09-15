@@ -13,7 +13,7 @@ use Iterator;
 interface LanguagePriorityInterface extends Iterator
 {
     /**
-     * @return LanguageInterface[]
+     * @return array<LanguageInterface>
      */
     public function getAll();
 
