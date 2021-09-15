@@ -4,12 +4,37 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
+## 1.8.0 - 2021-09-15
+
+### Added
+
+- [#26](https://github.com/eventjet/eventjet-i18n/pull/26) adds `LanguagePriority::fromLocale` to shortcut the creation
+  with a single language
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.7.0 - 2020-11-23
 
 ### Added
 
-- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) adds `TranslationMap::create` as replacement for `TranslationMapFactory`
-- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) adds `TranslationMap::pick` as replacement for `TranslationExtractor`
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) adds `TranslationMap::create` as replacement
+  for `TranslationMapFactory`
+- [#23](https://github.com/eventjet/eventjet-i18n/pull/23) adds `TranslationMap::pick` as replacement
+  for `TranslationExtractor`
 
 ### Changed
 
