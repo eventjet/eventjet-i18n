@@ -33,6 +33,11 @@ class LanguagePriority implements LanguagePriorityInterface
         $this->languages = $languages;
     }
 
+    public static function fromLocale(string $locale): self
+    {
+        return new self([Language::get($locale)]);
+    }
+
     /**
      * @return list<LanguageInterface>
      */

@@ -69,4 +69,12 @@ class LanguagePriorityTest extends TestCase
 
         $priority->current();
     }
+
+    public function testFromLocaleCreatesLanguagePriorityWithLanguage(): void
+    {
+        $priority = LanguagePriority::fromLocale('de');
+
+        $languages = $priority->getAll();
+        self::assertCount(1, $languages);
+    }
 }
