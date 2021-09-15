@@ -52,7 +52,7 @@ class LanguageTest extends TestCase
     }
 
     /**
-     * @return array<string[]>
+     * @return array<array<string>>
      */
     public function invalidLanguageFormats(): array
     {
@@ -60,7 +60,7 @@ class LanguageTest extends TestCase
     }
 
     /**
-     * @return array<string[]>
+     * @return array<array<string>>
      */
     public function validLanguageFormats(): array
     {
