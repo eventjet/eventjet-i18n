@@ -84,4 +84,12 @@ class LanguagePriorityTest extends TestCase
         self::assertNotSame((string)$first, (string)$second);
         self::assertNotSame((string)$second, (string)$firstAgain);
     }
+
+    public function testFromLocaleCreatesLanguagePriorityWithLanguage(): void
+    {
+        $priority = LanguagePriority::fromLocale('de');
+
+        $languages = $priority->getAll();
+        self::assertCount(1, $languages);
+    }
 }

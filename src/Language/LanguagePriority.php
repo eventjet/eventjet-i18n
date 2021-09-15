@@ -34,6 +34,11 @@ final class LanguagePriority implements Iterator
         $this->languages = $languages;
     }
 
+    public static function fromLocale(string $locale): self
+    {
+        return new self([Language::get($locale)]);
+    }
+
     /**
      * @return list<Language>
      */
