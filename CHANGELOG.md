@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
+## 2.1.0 - 2021-09-15
+
+### Added
+
+- [#25](https://github.com/eventjet/eventjet-i18n/pull/25) adds `LanguagePriority::fromLocale` to shortcut the creation
+  with a single language
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.0.0 - 2020-11-24
 
 ### Added
