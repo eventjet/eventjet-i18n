@@ -11,7 +11,7 @@
     "mutators": {
         "@default": true,
         "global-ignoreSourceCodeByRegex": [
-            "assert(.+);"
+            "assert\\(.+\\);"
         ]
     },
     "minMsi": 90,
