@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
+## 1.9.0 - 2021-10-30
+
+### Added
+
+- [#27](https://github.com/eventjet/eventjet-i18n/pull/27) adds support for an ICU Translator
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.8.0 - 2021-09-15
 
 ### Added
