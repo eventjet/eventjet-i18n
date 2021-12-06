@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
+## 2.2.1 - TBD
+
+### Added
+
+- [#30](https://github.com/eventjet/eventjet-i18n/pull/30) adds support for PHP 8.1
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.2.0 - 2021-10-30
 
 ### Added

@@ -7,14 +7,11 @@ jobs:
 
     strategy:
       matrix:
-        php: ["7.4", "8.0"]
+        php: ["7.4", "8.0", "8.1"]
 
     runs-on: ubuntu-latest
     container:
       image: eventjet/checks-${{ matrix.php }}:latest
-
-    env:
-      COMPOSER_ARGS: ''
 
     steps:
       - name: Checkout
@@ -24,22 +21,21 @@ jobs:
         run: |
           mkdir -p /root/.ssh
           ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
-
-      - name: Ignore Plaform Reqs if on PHP8
-        if: ${{ matrix.php == '8.0' }}
-        run: echo "COMPOSER_ARGS=--ignore-platform-reqs" >> $GITHUB_ENV
+          echo "COMPOSER_CACHE=$(composer config cache-dir)" >> $GITHUB_ENV
+          git fetch origin $GITHUB_BASE_REF $GITHUB_HEAD_REF
+          echo "GIT_ADDED_FILES="$(git diff --name-only --diff-filter=A origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF | grep 'src\/')"" >> $GITHUB_ENV
 
       - name: Composer Cache
         uses: actions/cache@v2
         with:
-          path: $(composer config cache-files-dir)
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          path: |
+            ${{ env.COMPOSER_CACHE }}
+            vendor
+          key: ${{ runner.os }}-composer
 
       - name: Install dependencies
         run: |
-          composer install --no-progress --no-suggest --no-interaction ${{ env.COMPOSER_ARGS }} > /dev/null
+          composer update --no-progress --no-interaction ${{ matrix.composer_args }} > /dev/null
 
       - name: Static analysis
         run: |
@@ -48,15 +44,27 @@ jobs:
           composer phpstan -- --no-progress
           composer psalm
 
+      - name: Infection coverage of added files
+        if: env.GIT_ADDED_FILES != '' && !contains(github.event.pull_request.labels.*.name, 'skip-infection-diff')
+        run: |
+          vendor/bin/infection \
+            --git-diff-base=origin/$GITHUB_BASE_REF \
+            --git-diff-filter=A \
+            --logger-github \
+            --min-msi=100 \
+            --min-covered-msi=100
+
       - name: Tests
         run: |
           vendor/bin/phpunit --coverage-clover=coverage.xml --stop-on-failure
           composer run --timeout=0 infection
 
-      - name: Log Infection mutants
-        run: |
-          git fetch --depth=1 origin $GITHUB_BASE_REF
-          composer run --timeout=0 infection -- --logger-github --git-diff-filter=AM --git-diff-base=origin/$GITHUB_BASE_REF
+      - name: Save Infection result
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: infection-log-${{ matrix.php }}.txt
+          path: infection-log.txt
 
       - name: Monitor coverage
         if: github.event_name == 'pull_request'
@@ -64,5 +72,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           clover_file: "coverage.xml"
-          threshold_alert: 99
-          threshold_warning: 99
+          comment_context: PHP ${{ matrix.php }}
+          threshold_alert: 100
+          threshold_warning: 100

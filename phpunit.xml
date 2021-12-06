@@ -5,6 +5,7 @@
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"
     verbose="true"
+    convertDeprecationsToExceptions="true"
 >
     <testsuite name="Eventjet\I18n">
         <directory>tests/unit</directory>
