@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
+## 1.10.0 - TBD
+
+### Added
+
+- [#29](https://github.com/eventjet/eventjet-i18n/pull/29) adds support for PHP 8.1
+
+### Changed
+
+- [#29](https://github.com/eventjet/eventjet-i18n/pull/29) adds return type hint to TranslationMap::jsonSerialize
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.9.0 - 2021-10-30
 
 ### Added
