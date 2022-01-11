@@ -9,6 +9,7 @@ use MessageFormatter;
 use Throwable;
 
 use function assert;
+use function sprintf;
 use function trim;
 
 final class NativeIcuTranslator implements IcuTranslatorInterface
@@ -24,7 +25,7 @@ final class NativeIcuTranslator implements IcuTranslatorInterface
 
     private static function formatter(string $locale, string $pattern): MessageFormatter
     {
-        $formatterKey = $locale . '-' . $pattern;
+        $formatterKey = sprintf('%s-%s', $locale, $pattern);
         $formatter = self::$formatters[$formatterKey] ?? null;
         if ($formatter !== null) {
             return $formatter;

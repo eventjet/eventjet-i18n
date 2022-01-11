@@ -136,7 +136,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $json = [];
         foreach ($this->translations as $translation) {
@@ -180,7 +180,7 @@ class TranslationMap implements TranslationMapInterface
      * Takes a callable with the following signature:
      * function (string $translation, Language $language): string
      *
-     * @param callable(string, \Eventjet\I18n\Language\Language): string $modifier
+     * @param callable(string, Language): string $modifier
      */
     public function withEachModified(callable $modifier): self
     {
