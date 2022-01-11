@@ -1,8 +1,8 @@
 {
     "name": "eventjet/i18n",
-    "type": "library",
     "description": "Library to handle Internationalization and language mappings",
     "license": "MIT",
+    "type": "library",
     "authors": [
         {
             "name": "Rudolph Gottesheim",
@@ -20,18 +20,17 @@
     },
     "require-dev": {
         "eventjet/coding-standard": "^3.0",
-        "infection/infection": "^0.20.0",
-        "maglnet/composer-require-checker": "^2.0",
+        "infection/infection": "^0.26.0",
+        "maglnet/composer-require-checker": "^3.0",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^0.12.32",
-        "phpstan/phpstan-phpunit": "^0.12.11",
+        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^9.4",
         "psalm/plugin-phpunit": "^0.13.0",
         "vimeo/psalm": "^4.0"
     },
-    "config": {
-        "sort-packages": true
-    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Eventjet\\I18n\\": "src"
@@ -42,8 +41,15 @@
             "EventjetTest\\I18n\\": "tests/unit"
         }
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "composer/package-versions-deprecated": true,
+            "infection/extension-installer": true
+        },
+        "sort-packages": true
+    },
     "scripts": {
         "check": [
             "@check-deps",
