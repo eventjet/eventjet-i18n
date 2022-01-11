@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 File automatically generated with [phly/keep-a-changelog](https://github.com/phly/keep-a-changelog)
 
-## 1.10.0 - TBD
+## 1.10.0 - 2022-01-11
 
 ### Added
 
