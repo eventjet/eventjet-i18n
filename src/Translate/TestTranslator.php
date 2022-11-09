@@ -31,26 +31,26 @@ final class TestTranslator implements TranslatorInterface
     {
         $primaryLocale = (string)$languages->primary();
         $translation = $this->translations[$message][$primaryLocale] ?? null;
-        if ($translation === null) {
-            if (!$this->strict) {
-                return $message;
-            }
-            $template = <<<'EOF'
-                A translation of "%s" in "%s" was requested, but no translation was added for this combination. Use 
-                $translator->add('%s', '%s', 'Your translation') to add one or $translator->setLenient() to enable 
-                lenient mode and make this error go away.
-                EOF;
-            throw new LogicException(
-                sprintf(
-                    str_replace("\n", '', $template),
-                    $message,
-                    $primaryLocale,
-                    $message,
-                    $primaryLocale,
-                )
-            );
+        if ($translation !== null) {
+            return $translation;
         }
-        return $translation;
+        if (!$this->strict) {
+            return $message;
+        }
+        $template = <<<'EOF'
+            A translation of "%s" in "%s" was requested, but no translation was added for this combination. Use 
+            $translator->add('%s', '%s', 'Your translation') to add one or $translator->setLenient() to enable 
+            lenient mode and make this error go away.
+            EOF;
+        throw new LogicException(
+            sprintf(
+                str_replace("\n", '', $template),
+                $message,
+                $primaryLocale,
+                $message,
+                $primaryLocale,
+            )
+        );
     }
 
     public function add(string $message, string $locale, string $translation): void
