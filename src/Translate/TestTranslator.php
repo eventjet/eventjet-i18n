@@ -15,11 +15,11 @@ use function str_replace;
  *
  * It is mutable and translations can be added using {@see TestTranslator::add()}.
  *
- * By default, the translator is very strict and throw an exception if no translation was added for the given id in the
- * given locale. You can switch to a more lenient mode by calling {@see setLenient()}. In this mode, the translator will
- * return some string, the contents of which are not specified.
- *
  * When translating, it _only_ uses the primary locale.
+ *
+ * By default, the translator is very strict and throws an exception if no translation was added for the given message
+ * ID in the given locale. You can switch to a more lenient mode by calling {@see TestTranslator::setLenient()}. In this
+ * mode, the translator will return some string, the contents of which are not specified.
  */
 final class TestTranslator implements TranslatorInterface
 {
