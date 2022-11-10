@@ -21,8 +21,23 @@ final class TestTranslatorTest extends TestCase
         $this->translator->add('bar', 'de', 'Bar, De');
 
         $this->expectException(LogicException::class);
+        $expectedMessage = 'A translation of "bar" in "en" was requested, but no translation was added for this '
+            . 'combination. Use $translator->add(\'bar\', \'en\', \'Your translation\') to add one or '
+            . '$translator->setLenient() to enable lenient mode and make this error go away.';
+        $this->expectExceptionMessage($expectedMessage);
 
         $this->translator->translate('bar', new LanguagePriority([Language::get('en')]));
+    }
+
+    public function testDoesNotThrowInLenientMode(): void
+    {
+        $this->translator->setLenient();
+
+        $translated = $this->translator->translate('my-message', LanguagePriority::fromLocale('en'));
+
+        // A smoke test using $this->expectNotToPerformAssertions() results in no coverage.
+        /** @psalm-suppress RedundantCondition */
+        self::assertIsString($translated);
     }
 
     protected function setUp(): void
