@@ -19,8 +19,8 @@ use function reset;
 
 final class TranslationMap implements JsonSerializable
 {
-    /** @var array<string, Translation> */
-    private array $translations = [];
+    /** @var non-empty-array<string, Translation> */
+    private array $translations;
 
     /**
      * @param array<array-key, Translation> $translations
@@ -30,9 +30,11 @@ final class TranslationMap implements JsonSerializable
         if (count($translations) === 0) {
             throw new InvalidArgumentException('Empty translation maps are not allowed.');
         }
+        $translationMap = [];
         foreach ($translations as $translation) {
-            $this->translations[(string)$translation->getLanguage()] = $translation;
+            $translationMap[(string)$translation->getLanguage()] = $translation;
         }
+        $this->translations = $translationMap;
     }
 
     /**
@@ -92,7 +94,7 @@ final class TranslationMap implements JsonSerializable
     }
 
     /**
-     * @return array<string, Translation>
+     * @return non-empty-array<string, Translation>
      */
     public function getAll(): array
     {
@@ -107,7 +109,7 @@ final class TranslationMap implements JsonSerializable
     }
 
     /**
-     * @return array<string, string>
+     * @return non-empty-array<string, string>
      */
     public function jsonSerialize(): array
     {
@@ -139,7 +141,7 @@ final class TranslationMap implements JsonSerializable
     }
 
     /**
-     * @return array<string, array{language: string, text: string}>
+     * @return non-empty-array<string, array{language: string, text: string}>
      */
     public function serialize(): array
     {
@@ -197,7 +199,6 @@ final class TranslationMap implements JsonSerializable
             return $return;
         }
         $translations = $this->getAll();
-        /** @var Translation $translation */
         $translation = reset($translations);
         $return = $this->get($translation->getLanguage());
         assert($return !== null);

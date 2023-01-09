@@ -13,7 +13,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
-use function assert;
 use function reset;
 use function spl_object_id;
 
@@ -164,7 +163,6 @@ class TranslationMapTest extends TestCase
         $onlyTranslation = $deserialized->getAll();
         self::assertCount(1, $onlyTranslation);
         $onlyTranslation = reset($onlyTranslation);
-        assert($onlyTranslation instanceof Translation);
         self::assertSame('en', (string)$onlyTranslation->getLanguage());
     }
 
