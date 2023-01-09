@@ -26,8 +26,8 @@
         "phpstan/phpstan": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^9.4",
-        "psalm/plugin-phpunit": "^0.13.0",
-        "vimeo/psalm": "^4.0"
+        "psalm/plugin-phpunit": "^0.18.4",
+        "vimeo/psalm": "^5.4"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
