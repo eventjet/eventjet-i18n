@@ -16,6 +16,7 @@ use function assert;
 use function count;
 use function is_array;
 use function is_string;
+use function trim;
 
 /**
  * @final will be marked final with the next version
@@ -64,20 +65,21 @@ class TranslationMap implements TranslationMapInterface
         if (!is_array($mapData)) {
             return false;
         }
-        if ($mapData === []) {
-            return false;
-        }
+        $filtered = [];
         /**
          * @var mixed $lang
          * @var mixed $text
          */
         foreach ($mapData as $lang => $text) {
-            if (is_string($lang) && is_string($text) && Language::isValid($lang)) {
+            if (!is_string($lang) || !is_string($text) || !Language::isValid($lang)) {
+                return false;
+            }
+            if (trim($text) === '') {
                 continue;
             }
-            return false;
+            $filtered[$lang] = $text;
         }
-        return true;
+        return count($filtered) !== 0;
     }
 
     /**

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Translate\Factory;
 
 use Eventjet\I18n\Language\Language;
+use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
 
 use function array_filter;
-use function array_keys;
 use function array_map;
 use function count;
 
@@ -30,9 +30,13 @@ class TranslationMapFactory implements TranslationMapFactoryInterface
         if (count($mapData) === 0) {
             return null;
         }
-        $translations = array_map(function ($text, $lang) {
-            return new Translation(Language::get($lang), $text);
-        }, $mapData, array_keys($mapData));
+        $translations = [];
+        foreach ($mapData as $lang => $text) {
+            if (!Language::isValid($lang)) {
+                throw new InvalidTranslationMapDataException('Given translation map data is invalid');
+            }
+            $translations[] = new Translation(Language::get($lang), $text);
+        }
         return new TranslationMap($translations);
     }
 
