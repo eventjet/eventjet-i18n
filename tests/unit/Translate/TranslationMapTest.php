@@ -287,14 +287,13 @@ class TranslationMapTest extends TestCase
             throw new InvalidTranslationMapDataException(sprintf('Expected array, got %s', gettype($mapData)));
         }
         foreach ($mapData as $key => $value) {
-            if (is_string($key) && is_string($value)) {
-                continue;
+            if (!is_string($key) || !is_string($value)) {
+                throw new InvalidTranslationMapDataException(
+                    sprintf('Expected array<string, string>, got %s', gettype($mapData))
+                );
             }
-            throw new InvalidTranslationMapDataException(
-                sprintf('Expected array<string, string>, got %s', gettype($mapData))
-            );
         }
-
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         TranslationMap::create($mapData);
     }
 
