@@ -11,13 +11,14 @@ use InvalidArgumentException;
 use JsonSerializable;
 
 use function array_filter;
-use function array_keys;
 use function array_map;
 use function assert;
 use function count;
 use function is_array;
 use function is_string;
 use function reset;
+use function sprintf;
+use function trim;
 
 final class TranslationMap implements JsonSerializable
 {
@@ -49,11 +50,13 @@ final class TranslationMap implements JsonSerializable
         if (count($mapData) === 0) {
             throw new InvalidTranslationMapDataException('Given translation map data is invalid');
         }
-        $translations = array_map(
-            static fn($text, $lang) => new Translation(Language::get($lang), $text),
-            $mapData,
-            array_keys($mapData)
-        );
+        $translations = [];
+        foreach ($mapData as $lang => $text) {
+            if (!Language::isValid($lang)) {
+                throw new InvalidTranslationMapDataException(sprintf('Invalid language "%s".', $lang));
+            }
+            $translations[] = new Translation(Language::get($lang), $text);
+        }
         return new TranslationMap($translations);
     }
 
@@ -67,20 +70,21 @@ final class TranslationMap implements JsonSerializable
         if (!is_array($mapData)) {
             return false;
         }
-        if ($mapData === []) {
-            return false;
-        }
+        $filtered = [];
         /**
          * @var mixed $lang
          * @var mixed $text
          */
         foreach ($mapData as $lang => $text) {
-            if (is_string($lang) && is_string($text) && Language::isValid($lang)) {
+            if (!is_string($lang) || !is_string($text) || !Language::isValid($lang)) {
+                return false;
+            }
+            if (trim($text) === '') {
                 continue;
             }
-            return false;
+            $filtered[$lang] = $text;
         }
-        return true;
+        return count($filtered) !== 0;
     }
 
     /**

@@ -13,8 +13,12 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
+use function gettype;
+use function is_array;
+use function is_string;
 use function reset;
 use function spl_object_id;
+use function sprintf;
 
 class TranslationMapTest extends TestCase
 {
@@ -261,17 +265,37 @@ class TranslationMapTest extends TestCase
     }
 
     /**
-     * @return array<array<array<string, string>>>
+     * @return iterable<string, array{array<string, string>}>
      */
-    public function validMapData(): array
+    public function validMapData(): iterable
     {
-        return [
-            [
-                ['de' => 'Ein Test'],
-                ['de' => 'Ein Test', 'en' => 'A test'],
-                ['en' => 'A test', 'de' => 'Ein Test'],
-            ],
-        ];
+        yield 'Single language' => [['de' => 'Ein Test']];
+        yield 'Multiple languages' => [['de' => 'Ein Test', 'en' => 'A test']];
+        yield 'Multiple languages with keys in non-ascending order' => [['en' => 'A test', 'de' => 'Ein Test']];
+        yield 'Empty text in the middle' => [['de' => 'Ein Test', 'en' => '', 'fr' => 'Un test']];
+    }
+
+    /**
+     * @dataProvider invalidMapData
+     */
+    public function testCreateFailsWithInvalidData(mixed $mapData): void
+    {
+        $this->expectException(InvalidTranslationMapDataException::class);
+
+
+        if (!is_array($mapData)) {
+            throw new InvalidTranslationMapDataException(sprintf('Expected array, got %s', gettype($mapData)));
+        }
+        foreach ($mapData as $key => $value) {
+            if (is_string($key) && is_string($value)) {
+                continue;
+            }
+            throw new InvalidTranslationMapDataException(
+                sprintf('Expected array<string, string>, got %s', gettype($mapData))
+            );
+        }
+
+        TranslationMap::create($mapData);
     }
 
     /**
@@ -291,6 +315,7 @@ class TranslationMapTest extends TestCase
         yield 'array<locale-string, int>' => [['fr' => 23]];
         yield 'invalid locale' => [['foo' => 'bar']];
         yield 'Invalid element in the middle' => [['de' => 'foo', 'foo' => 'bar', 'en' => 'baz']];
+        yield 'all texts are empty' => [['de' => '', 'en' => ' ', 'es' => "\n"]];
     }
 
     public function testTextsAreTrimmed(): void
