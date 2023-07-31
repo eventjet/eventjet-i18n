@@ -42,7 +42,7 @@ final class LanguagePriority implements Iterator
     /**
      * @return list<Language>
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->languages;
     }
