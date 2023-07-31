@@ -15,6 +15,8 @@ use function array_keys;
 use function array_map;
 use function assert;
 use function count;
+use function is_array;
+use function is_string;
 use function reset;
 
 final class TranslationMap implements JsonSerializable
@@ -53,6 +55,33 @@ final class TranslationMap implements JsonSerializable
             array_keys($mapData)
         );
         return new TranslationMap($translations);
+    }
+
+    /**
+     * Checks whether the given value can be used as an argument for {@see self::create()}.
+     *
+     * @param mixed $mapData
+     * @psalm-assert-if-true array<string, string> $mapData
+     */
+    public static function canCreate($mapData): bool
+    {
+        if (!is_array($mapData)) {
+            return false;
+        }
+        if ($mapData === []) {
+            return false;
+        }
+        /**
+         * @var mixed $lang
+         * @var mixed $text
+         */
+        foreach ($mapData as $lang => $text) {
+            if (is_string($lang) && is_string($text) && Language::isValid($lang)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     /**

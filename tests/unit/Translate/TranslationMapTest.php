@@ -244,6 +244,24 @@ class TranslationMapTest extends TestCase
     }
 
     /**
+     * @param array<string, string> $mapData
+     * @dataProvider validMapData
+     */
+    public function testCanCreate(array $mapData): void
+    {
+        self::assertTrue(TranslationMap::canCreate($mapData));
+    }
+
+    /**
+     * @param mixed $mapData
+     * @dataProvider invalidMapData
+     */
+    public function testCanNotCreate(mixed $mapData): void
+    {
+        self::assertFalse(TranslationMap::canCreate($mapData));
+    }
+
+    /**
      * @return array<array<array<string, string>>>
      */
     public function validMapData(): array
@@ -255,6 +273,25 @@ class TranslationMapTest extends TestCase
                 ['en' => 'A test', 'de' => 'Ein Test'],
             ],
         ];
+    }
+
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function invalidMapData(): iterable
+    {
+        yield 'string' => ['foo'];
+        yield 'int' => [23];
+        yield 'float' => [23.42];
+        yield 'true' => [true];
+        yield 'false' => [false];
+        yield 'null' => [null];
+        yield 'array{}' => [[]];
+        yield 'list<string>' => [['foo']];
+        yield 'array<int, string>' => [[23 => 'foo']];
+        yield 'array<locale-string, int>' => [['fr' => 23]];
+        yield 'invalid locale' => [['foo' => 'bar']];
+        yield 'Invalid element in the middle' => [['de' => 'foo', 'foo' => 'bar', 'en' => 'baz']];
     }
 
     public function testTextsAreTrimmed(): void
