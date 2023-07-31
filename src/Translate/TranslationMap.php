@@ -60,10 +60,9 @@ final class TranslationMap implements JsonSerializable
     /**
      * Checks whether the given value can be used as an argument for {@see self::create()}.
      *
-     * @param mixed $mapData
      * @psalm-assert-if-true array<string, string> $mapData
      */
-    public static function canCreate($mapData): bool
+    public static function canCreate(mixed $mapData): bool
     {
         if (!is_array($mapData)) {
             return false;

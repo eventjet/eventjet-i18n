@@ -253,7 +253,6 @@ class TranslationMapTest extends TestCase
     }
 
     /**
-     * @param mixed $mapData
      * @dataProvider invalidMapData
      */
     public function testCanNotCreate(mixed $mapData): void
