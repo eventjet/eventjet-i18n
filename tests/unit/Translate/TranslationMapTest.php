@@ -273,6 +273,7 @@ class TranslationMapTest extends TestCase
         yield 'Multiple languages' => [['de' => 'Ein Test', 'en' => 'A test']];
         yield 'Multiple languages with keys in non-ascending order' => [['en' => 'A test', 'de' => 'Ein Test']];
         yield 'Empty text in the middle' => [['de' => 'Ein Test', 'en' => '', 'fr' => 'Un test']];
+        yield 'Valid text after empty text' => [['de' => '', 'en' => 'A test']];
     }
 
     /**
@@ -315,6 +316,7 @@ class TranslationMapTest extends TestCase
         yield 'invalid locale' => [['foo' => 'bar']];
         yield 'Invalid element in the middle' => [['de' => 'foo', 'foo' => 'bar', 'en' => 'baz']];
         yield 'all texts are empty' => [['de' => '', 'en' => ' ', 'es' => "\n"]];
+        yield 'non-string value after empty value' => [['de' => '', 'en' => 23]];
     }
 
     public function testTextsAreTrimmed(): void
