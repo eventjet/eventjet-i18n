@@ -14,6 +14,8 @@ use InvalidArgumentException;
 use function array_map;
 use function assert;
 use function count;
+use function is_array;
+use function is_string;
 
 /**
  * @final will be marked final with the next version
@@ -50,6 +52,32 @@ class TranslationMap implements TranslationMapInterface
         }
         assert($map instanceof self);
         return $map;
+    }
+
+    /**
+     * Checks whether the given value can be used as an argument for {@see self::create()}.
+     *
+     * @psalm-assert-if-true array<string, string> $mapData
+     */
+    public static function canCreate(mixed $mapData): bool
+    {
+        if (!is_array($mapData)) {
+            return false;
+        }
+        if ($mapData === []) {
+            return false;
+        }
+        /**
+         * @var mixed $lang
+         * @var mixed $text
+         */
+        foreach ($mapData as $lang => $text) {
+            if (is_string($lang) && is_string($text) && Language::isValid($lang)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     /**

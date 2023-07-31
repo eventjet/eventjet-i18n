@@ -218,4 +218,166 @@ class TranslationMapTest extends TestCase
         self::assertSame('German', $resultA);
         self::assertSame('French', $resultB);
     }
+
+    /**
+     * @param array<string, string> $mapData
+     * @dataProvider validMapData
+     */
+    public function testCreate(array $mapData): void
+    {
+        $map = TranslationMap::create($mapData);
+        foreach ($mapData as $lang => $text) {
+            self::assertEquals($text, $map->get(Language::get($lang)));
+        }
+    }
+
+    /**
+     * @param array<string, string> $mapData
+     * @dataProvider validMapData
+     */
+    public function testCanCreate(array $mapData): void
+    {
+        /** @psalm-suppress RedundantCondition */
+        self::assertTrue(TranslationMap::canCreate($mapData));
+    }
+
+    /**
+     * @dataProvider invalidMapData
+     */
+    public function testCanNotCreate(mixed $mapData): void
+    {
+        self::assertFalse(TranslationMap::canCreate($mapData));
+    }
+
+    /**
+     * @return array<array<array<string, string>>>
+     */
+    public function validMapData(): array
+    {
+        return [
+            [
+                ['de' => 'Ein Test'],
+                ['de' => 'Ein Test', 'en' => 'A test'],
+                ['en' => 'A test', 'de' => 'Ein Test'],
+            ],
+        ];
+    }
+
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function invalidMapData(): iterable
+    {
+        yield 'string' => ['foo'];
+        yield 'int' => [23];
+        yield 'float' => [23.42];
+        yield 'true' => [true];
+        yield 'false' => [false];
+        yield 'null' => [null];
+        yield 'array{}' => [[]];
+        yield 'list<string>' => [['foo']];
+        yield 'array<int, string>' => [[23 => 'foo']];
+        yield 'array<locale-string, int>' => [['fr' => 23]];
+        yield 'invalid locale' => [['foo' => 'bar']];
+        yield 'Invalid element in the middle' => [['de' => 'foo', 'foo' => 'bar', 'en' => 'baz']];
+    }
+
+    public function testTextsAreTrimmed(): void
+    {
+        $map = TranslationMap::create(['de' => ' de', 'en' => 'en ', 'es' => ' es ', 'it' => "it\n"]);
+
+        foreach ($map->getAll() as $translation) {
+            self::assertEquals((string)$translation->getLanguage(), $translation->getText());
+        }
+    }
+
+    public function testEmptyTextsAreRemoved(): void
+    {
+        $map = TranslationMap::create(['de' => 'Test', 'en' => '', 'es' => ' ', 'it' => "\n"]);
+
+        self::assertCount(1, $map->getAll());
+    }
+
+    /**
+     * @dataProvider emptyMapData
+     * @param array<string, string> $mapData
+     */
+    public function testCreateThrowsExceptionIfMapDataIsInvalid(array $mapData): void
+    {
+        $this->expectException(InvalidTranslationMapDataException::class);
+
+        TranslationMap::create($mapData);
+    }
+
+    /**
+     * @return array<array<array<string, string>>>
+     */
+    public function emptyMapData(): array
+    {
+        return [
+            [[]],
+            [['de' => '']],
+            [['de' => '', 'en' => ' ', 'es' => "\n"]],
+        ];
+    }
+
+    /**
+     * @dataProvider pickData
+     */
+    public function testPick(
+        TranslationMap $map,
+        LanguagePriority $priority,
+        string $expectedReturn
+    ): void {
+        self::assertEquals($expectedReturn, $map->pick($priority));
+    }
+
+    /**
+     * @return list<array{TranslationMap, LanguagePriority, string}>
+     */
+    public function pickData(): array
+    {
+        $data = [
+            [['de' => 'Deutsch'], ['de'], 'Deutsch'],
+            [['de' => 'Deutsch', 'en' => 'English'], ['en', 'de'], 'English'],
+            [['de' => 'Deutsch'], ['en'], 'Deutsch'],
+            [['es' => 'Espanol', 'de' => 'Deutsch'], ['de-AT'], 'Deutsch'],
+            [['de' => 'Deutsch', 'en' => 'English'], ['es'], 'English'],
+            [['de' => 'Deutsch'], ['es'], 'Deutsch'],
+            [['es' => 'Spanish', 'de' => 'Deutsch'], ['fr', 'de-DE', 'es'], 'Deutsch'],
+        ];
+        $data = array_map(
+            function (array $item) {
+                return [
+                    $this->createTranslationMap($item[0]),
+                    $this->createPriority($item[1]),
+                    $item[2],
+                ];
+            },
+            $data
+        );
+        return $data;
+    }
+
+    /**
+     * @param array<string, string> $mapData
+     */
+    private function createTranslationMap(array $mapData): TranslationMap
+    {
+        $translations = [];
+        foreach ($mapData as $language => $string) {
+            $translations[] = new Translation(Language::get($language), $string);
+        }
+        return new TranslationMap($translations);
+    }
+
+    /**
+     * @param list<string> $priorityData
+     */
+    private function createPriority(array $priorityData): LanguagePriority
+    {
+        return new LanguagePriority(
+            array_map(static fn(string $language): Language => Language::get($language), $priorityData)
+        );
+    }
 }
