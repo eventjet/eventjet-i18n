@@ -41,7 +41,7 @@ class LanguagePriority implements LanguagePriorityInterface
     /**
      * @return list<LanguageInterface>
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->languages;
     }
