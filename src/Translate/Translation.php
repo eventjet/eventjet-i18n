@@ -14,6 +14,7 @@ use function sprintf;
 
 /**
  * @final will be marked final with the next version
+ * @psalm-immutable
  */
 class Translation implements TranslationInterface
 {

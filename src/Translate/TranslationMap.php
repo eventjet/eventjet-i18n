@@ -20,11 +20,11 @@ use function trim;
 
 /**
  * @final will be marked final with the next version
+ * @psalm-immutable
  */
 class TranslationMap implements TranslationMapInterface
 {
     private static ?TranslationMapFactory $factory = null;
-    private static ?TranslationExtractor $extractor = null;
     /** @var array<string, Translation> */
     private array $translations = [];
 
@@ -109,16 +109,17 @@ class TranslationMap implements TranslationMapInterface
         return $factory;
     }
 
+    /**
+     * @psalm-pure
+     */
     private static function getExtractor(): TranslationExtractor
     {
-        if (self::$extractor === null) {
-            self::$extractor = new TranslationExtractor();
-        }
-        return self::$extractor;
+        return new TranslationExtractor();
     }
 
     /**
      * @return array{language: string, text: string}
+     * @psalm-pure
      */
     private static function serializeTranslation(Translation $translation): array
     {
@@ -203,26 +204,25 @@ class TranslationMap implements TranslationMapInterface
      */
     public function serialize(): array
     {
-        return array_map([self::class, 'serializeTranslation'], $this->translations);
+        return array_map(self::serializeTranslation(...), $this->translations);
     }
 
     /**
      * Takes a callable with the following signature:
      * function (string $translation, Language $language): string
      *
-     * @param callable(string, Language): string $modifier
+     * @param pure-callable(string, Language): string $modifier
      */
     public function withEachModified(callable $modifier): self
     {
         $modified = clone $this;
-        $modified->translations = array_map(
-            static function (TranslationInterface $translation) use ($modifier): Translation {
-                $language = $translation->getLanguage();
-                assert($language instanceof Language);
-                return new Translation($language, $modifier($translation->getText(), $language));
-            },
-            $this->translations
-        );
+        $translations = [];
+        foreach ($this->translations as $key => $translation) {
+            $language = $translation->getLanguage();
+            assert($language instanceof Language);
+            $translations[$key] = new Translation($language, $modifier($translation->getText(), $language));
+        }
+        $modified->translations = $translations;
         return $modified;
     }
 

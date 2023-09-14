@@ -9,6 +9,7 @@ use JsonSerializable;
 
 /**
  * @deprecated Use TranslationMap directly
+ * @psalm-immutable
  */
 interface TranslationMapInterface extends JsonSerializable
 {

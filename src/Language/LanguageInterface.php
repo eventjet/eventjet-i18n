@@ -6,6 +6,7 @@ namespace Eventjet\I18n\Language;
 
 /**
  * @deprecated Use Language directly
+ * @psalm-immutable
  */
 interface LanguageInterface
 {

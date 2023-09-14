@@ -9,6 +9,7 @@ namespace Eventjet\I18n\Language;
  *
  * @deprecated
  * @phpstan-ignore-next-line
+ * @psalm-immutable
  */
 class LanguagePrioriry extends LanguagePriority
 {
