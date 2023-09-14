@@ -16,6 +16,7 @@ use function reset;
 
 /**
  * @final will be marked final with the next version
+ * @psalm-immutable
  */
 class LanguagePriority implements LanguagePriorityInterface
 {
@@ -46,6 +47,10 @@ class LanguagePriority implements LanguagePriorityInterface
         return $this->languages;
     }
 
+    /**
+     * @psalm-mutation-free
+     * @psalm-allow-private-mutation
+     */
     public function current(): LanguageInterface
     {
         $current = current($this->languages);
@@ -55,6 +60,9 @@ class LanguagePriority implements LanguagePriorityInterface
         return $current;
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     public function next(): void
     {
         next($this->languages);
@@ -73,6 +81,9 @@ class LanguagePriority implements LanguagePriorityInterface
         return ($key !== null);
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     public function rewind(): void
     {
         reset($this->languages);

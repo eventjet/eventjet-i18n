@@ -13,13 +13,14 @@ use function substr;
 
 /**
  * @final will be marked final with the next version
+ * @psalm-immutable
  */
 class Language implements LanguageInterface
 {
     /** @var array<string, Language> */
     private static array $pool = [];
     private string $language;
-    private ?bool $hasRegion = null;
+    private bool $hasRegion;
 
     /**
      * @param string $language
@@ -30,6 +31,7 @@ class Language implements LanguageInterface
             throw new InvalidLanguageFormatException(sprintf('Invalid language "%s".', $language));
         }
         $this->language = $language;
+        $this->hasRegion = strpos($this->language, '-') !== false;
     }
 
     /**
@@ -43,12 +45,10 @@ class Language implements LanguageInterface
 
     /**
      * @return bool
+     * @psalm-allow-private-mutation
      */
     public function hasRegion()
     {
-        if ($this->hasRegion === null) {
-            $this->hasRegion = strpos($this->language, '-') !== false;
-        }
         return $this->hasRegion;
     }
 
@@ -63,6 +63,8 @@ class Language implements LanguageInterface
     /**
      * @param string $language
      * @return Language
+     * @psalm-pure
+     * @psalm-suppress ImpureStaticProperty It's fine
      */
     public static function get($language)
     {

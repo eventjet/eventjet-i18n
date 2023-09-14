@@ -14,6 +14,7 @@ use function reset;
 
 /**
  * @deprecated use {@see TranslationMap::pick} instead
+ * @psalm-immutable
  */
 class TranslationExtractor implements TranslationExtractorInterface
 {
@@ -28,6 +29,7 @@ class TranslationExtractor implements TranslationExtractorInterface
 
     private function extractFromPriority(TranslationMapInterface $map, LanguagePriorityInterface $priorities): ?string
     {
+        /** @psalm-suppress ImpureMethodCall We're fine */
         foreach ($priorities as $language) {
             /** @var LanguageInterface $language */
             if ($map->has($language)) {

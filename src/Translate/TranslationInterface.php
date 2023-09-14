@@ -8,6 +8,7 @@ use Eventjet\I18n\Language\LanguageInterface;
 
 /**
  * @deprecated Use Translation directly
+ * @psalm-immutable
  */
 interface TranslationInterface
 {

@@ -9,6 +9,7 @@ use Iterator;
 /**
  * @extends Iterator<LanguageInterface>
  * @deprecated Use LanguagePriority directly
+ * @psalm-pure
  */
 interface LanguagePriorityInterface extends Iterator
 {

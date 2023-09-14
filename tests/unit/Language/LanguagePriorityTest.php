@@ -67,7 +67,7 @@ class LanguagePriorityTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Pointer is beyond the end of the elements');
 
-        $priority->current();
+        $_current = $priority->current();
     }
 
     public function testFromLocaleCreatesLanguagePriorityWithLanguage(): void
