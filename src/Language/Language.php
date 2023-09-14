@@ -11,12 +11,15 @@ use function sprintf;
 use function strpos;
 use function substr;
 
+/**
+ * @psalm-immutable
+ */
 final class Language
 {
     /** @var array<string, Language> */
     private static array $pool = [];
     private string $language;
-    private ?bool $hasRegion = null;
+    private bool $hasRegion;
 
     private function __construct(string $language)
     {
@@ -24,6 +27,7 @@ final class Language
             throw new InvalidLanguageFormatException(sprintf('Invalid language "%s".', $language));
         }
         $this->language = $language;
+        $this->hasRegion = strpos($this->language, '-') !== false;
     }
 
     public static function isValid(string $language): bool
@@ -31,6 +35,10 @@ final class Language
         return preg_match('/^([a-z]{2}(-[A-Z]{2})?)$/', $language) === 1;
     }
 
+    /**
+     * @psalm-pure
+     * @psalm-suppress ImpureStaticProperty It's fine
+     */
     public static function get(string $language): Language
     {
         if (!isset(self::$pool[$language])) {
@@ -39,11 +47,11 @@ final class Language
         return self::$pool[$language];
     }
 
+    /**
+     * @psalm-allow-private-mutation
+     */
     public function hasRegion(): bool
     {
-        if ($this->hasRegion === null) {
-            $this->hasRegion = strpos($this->language, '-') !== false;
-        }
         return $this->hasRegion;
     }
 

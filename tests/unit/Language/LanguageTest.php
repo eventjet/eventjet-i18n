@@ -22,7 +22,7 @@ class LanguageTest extends TestCase
     {
         $this->expectException(InvalidLanguageFormatException::class);
 
-        Language::get($language);
+        $_language = Language::get($language);
     }
 
     /**
@@ -32,7 +32,7 @@ class LanguageTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
 
-        Language::get($language);
+        $_language = Language::get($language);
     }
 
     /**

@@ -6,6 +6,9 @@ namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\Language;
 
+/**
+ * @psalm-immutable
+ */
 final class Translation
 {
     private const LANGUAGE = 'language';
