@@ -17,6 +17,7 @@ use function reset;
 
 /**
  * @implements Iterator<Language>
+ * @psalm-immutable
  */
 final class LanguagePriority implements Iterator
 {
@@ -47,6 +48,10 @@ final class LanguagePriority implements Iterator
         return $this->languages;
     }
 
+    /**
+     * @psalm-mutation-free
+     * @psalm-allow-private-mutation
+     */
     public function current(): Language
     {
         $current = current($this->languages);
@@ -56,6 +61,9 @@ final class LanguagePriority implements Iterator
         return $current;
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     public function next(): void
     {
         next($this->languages);
@@ -74,6 +82,9 @@ final class LanguagePriority implements Iterator
         return ($key !== null);
     }
 
+    /**
+     * @psalm-external-mutation-free
+     */
     public function rewind(): void
     {
         reset($this->languages);

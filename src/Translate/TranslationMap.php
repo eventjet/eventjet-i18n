@@ -20,6 +20,9 @@ use function reset;
 use function sprintf;
 use function trim;
 
+/**
+ * @psalm-immutable
+ */
 final class TranslationMap implements JsonSerializable
 {
     /** @var non-empty-array<string, Translation> */
@@ -106,6 +109,7 @@ final class TranslationMap implements JsonSerializable
 
     /**
      * @return array{language: string, text: string}
+     * @psalm-pure
      */
     private static function serializeTranslation(Translation $translation): array
     {
@@ -177,25 +181,24 @@ final class TranslationMap implements JsonSerializable
      */
     public function serialize(): array
     {
-        return array_map([self::class, 'serializeTranslation'], $this->translations);
+        return array_map(self::serializeTranslation(...), $this->translations);
     }
 
     /**
      * Takes a callable with the following signature:
      * function (string $translation, Language $language): string
      *
-     * @param callable(string, \Eventjet\I18n\Language\Language): string $modifier
+     * @param pure-callable(string, \Eventjet\I18n\Language\Language): string $modifier
      */
     public function withEachModified(callable $modifier): self
     {
         $modified = clone $this;
-        $modified->translations = array_map(
-            static function (Translation $translation) use ($modifier): Translation {
-                $language = $translation->getLanguage();
-                return new Translation($language, $modifier($translation->getText(), $language));
-            },
-            $this->translations
-        );
+        $translations = [];
+        foreach ($this->translations as $key => $translation) {
+            $language = $translation->getLanguage();
+            $translations[$key] = new Translation($language, $modifier($translation->getText(), $language));
+        }
+        $modified->translations = $translations;
         return $modified;
     }
 
