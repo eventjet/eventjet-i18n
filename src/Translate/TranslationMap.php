@@ -10,6 +10,7 @@ use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use InvalidArgumentException;
+use SplFixedArray;
 
 use function array_map;
 use function assert;
@@ -25,20 +26,34 @@ use function trim;
 class TranslationMap implements TranslationMapInterface
 {
     private static ?TranslationMapFactory $factory = null;
-    /** @var array<string, Translation> */
-    private array $translations = [];
+    /** @var SplFixedArray<string> */
+    private SplFixedArray $locales;
+    /** @var SplFixedArray<string> */
+    private SplFixedArray $texts;
 
     /**
      * @param array<array-key, Translation> $translations
      */
     public function __construct(array $translations)
     {
-        if (count($translations) === 0) {
+        $n = count($translations);
+        if ($n === 0) {
             throw new InvalidArgumentException('Empty translation maps are not allowed.');
         }
+        /** @var SplFixedArray<string> $locales */
+        $locales = new SplFixedArray($n);
+        /** @var SplFixedArray<string> $texts */
+        $texts = new SplFixedArray($n);
+        $i = 0;
         foreach ($translations as $translation) {
-            $this->translations[(string)$translation->getLanguage()] = $translation;
+            /** @psalm-suppress ImpureMethodCall It's fine here */
+            $locales[$i] = (string)$translation->getLanguage();
+            /** @psalm-suppress ImpureMethodCall It's fine here */
+            $texts[$i] = $translation->getText();
+            $i++;
         }
+        $this->locales = $locales;
+        $this->texts = $texts;
     }
 
     /**
@@ -131,7 +146,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public function has(LanguageInterface $language)
     {
-        return isset($this->translations[(string)$language]);
+        return isset($this->toLegacyStructure()[(string)$language]);
     }
 
     /**
@@ -139,10 +154,10 @@ class TranslationMap implements TranslationMapInterface
      */
     public function get(LanguageInterface $language)
     {
-        if (!isset($this->translations[(string)$language])) {
+        if (!isset($this->toLegacyStructure()[(string)$language])) {
             return null;
         }
-        return $this->translations[(string)$language]->getText();
+        return $this->toLegacyStructure()[(string)$language]->getText();
     }
 
     /**
@@ -150,7 +165,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public function getAll()
     {
-        return $this->translations;
+        return $this->toLegacyStructure();
     }
 
     /**
@@ -158,10 +173,8 @@ class TranslationMap implements TranslationMapInterface
      */
     public function withTranslation(TranslationInterface $translation)
     {
-        $newMap = clone $this;
-        assert($translation instanceof Translation);
-        $newMap->translations[(string)$translation->getLanguage()] = $translation;
-        return $newMap;
+        $translation = new Translation($translation->getLanguage(), $translation->getText());
+        return new self([...$this->toLegacyStructure(), $translation]);
     }
 
     /**
@@ -170,7 +183,7 @@ class TranslationMap implements TranslationMapInterface
     public function jsonSerialize(): array
     {
         $json = [];
-        foreach ($this->translations as $translation) {
+        foreach ($this->toLegacyStructure() as $translation) {
             $json[(string)$translation->getLanguage()] = $translation->getText();
         }
         return $json;
@@ -185,10 +198,10 @@ class TranslationMap implements TranslationMapInterface
             return true;
         }
         $otherData = $other->getAll();
-        if (count($this->translations) !== count($otherData)) {
+        if (count($this->toLegacyStructure()) !== count($otherData)) {
             return false;
         }
-        foreach ($this->translations as $translation) {
+        foreach ($this->toLegacyStructure() as $translation) {
             if (!$other->has($translation->getLanguage())) {
                 return false;
             }
@@ -204,7 +217,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public function serialize(): array
     {
-        return array_map(self::serializeTranslation(...), $this->translations);
+        return array_map(self::serializeTranslation(...), $this->toLegacyStructure());
     }
 
     /**
@@ -215,20 +228,44 @@ class TranslationMap implements TranslationMapInterface
      */
     public function withEachModified(callable $modifier): self
     {
-        $modified = clone $this;
         $translations = [];
-        foreach ($this->translations as $key => $translation) {
-            $language = $translation->getLanguage();
-            assert($language instanceof Language);
-            $translations[$key] = new Translation($language, $modifier($translation->getText(), $language));
+        foreach ($this->toLegacyStructure() as $translation) {
+            $locale = Language::get((string)$translation->getLanguage());
+            $translations[(string)$locale] = new Translation($locale, $modifier($translation->getText(), $locale));
         }
-        $modified->translations = $translations;
-        return $modified;
+        return new self($translations);
     }
 
     public function pick(LanguagePriority $languages): string
     {
         $extractor = self::getExtractor();
         return $extractor->extract($this, $languages);
+    }
+
+    /**
+     * @return array<string, Translation>
+     */
+    private function toLegacyStructure(): array
+    {
+        $structure = [];
+        /** @psalm-suppress ImpureMethodCall SplFixedArray#count() *is* pure */
+        for ($i = 0; $i < $this->locales->count(); $i++) {
+            /** @psalm-suppress ImpureMethodCall SplFixedArray#offsetGet() *is* pure */
+            $locale = $this->locales[$i];
+            /** @psalm-suppress ImpureMethodCall SplFixedArray#offsetGet() *is* pure */
+            $text = $this->texts[$i];
+            /**
+             * @psalm-suppress RedundantConditionGivenDocblockType SplFixedArray#offsetGet() returns null for offsets
+             *     that haven't been set. Which is impossible here. Which is why we are asserting.
+             */
+            assert($locale !== null);
+            /**
+             * @psalm-suppress RedundantConditionGivenDocblockType SplFixedArray#offsetGet() returns null for offsets
+             *     that haven't been set. Which is impossible here. Which is why we are asserting.
+             */
+            assert($text !== null);
+            $structure[$locale] = new Translation(Language::get($locale), $text);
+        }
+        return $structure;
     }
 }
