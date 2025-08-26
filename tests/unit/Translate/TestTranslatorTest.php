@@ -8,7 +8,10 @@ use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\TestTranslator;
 use LogicException;
+use Override;
 use PHPUnit\Framework\TestCase;
+
+use function implode;
 
 final class TestTranslatorTest extends TestCase
 {
@@ -21,9 +24,11 @@ final class TestTranslatorTest extends TestCase
         $this->translator->add('bar', 'de', 'Bar, De');
 
         $this->expectException(LogicException::class);
-        $expectedMessage = 'A translation of "bar" in "en" was requested, but no translation was added for this '
-            . 'combination. Use $translator->add(\'bar\', \'en\', \'Your translation\') to add one or '
-            . '$translator->setLenient() to enable lenient mode and make this error go away.';
+        $expectedMessage = implode('', [
+            'A translation of "bar" in "en" was requested, but no translation was added for this ',
+            'combination. Use $translator->add(\'bar\', \'en\', \'Your translation\') to add one or ',
+            '$translator->setLenient() to enable lenient mode and make this error go away.',
+        ]);
         $this->expectExceptionMessage($expectedMessage);
 
         $this->translator->translate('bar', new LanguagePriority([Language::get('en')]));
@@ -33,13 +38,12 @@ final class TestTranslatorTest extends TestCase
     {
         $this->translator->setLenient();
 
-        $translated = $this->translator->translate('my-message', LanguagePriority::fromLocale('en'));
+        $this->expectNotToPerformAssertions();
 
-        // A smoke test using $this->expectNotToPerformAssertions() results in no coverage.
-        /** @psalm-suppress RedundantCondition */
-        self::assertIsString($translated);
+        $this->translator->translate('my-message', LanguagePriority::fromLocale('en'));
     }
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

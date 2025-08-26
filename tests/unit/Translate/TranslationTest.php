@@ -7,9 +7,10 @@ namespace EventjetTest\I18n\Translate;
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Translation;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class TranslationTest extends TestCase
+final class TranslationTest extends TestCase
 {
     public function testExceptionIsThrownIfTextIsNotAString(): void
     {
@@ -37,9 +38,7 @@ class TranslationTest extends TestCase
         self::assertEquals($text, $returnedText);
     }
 
-    /**
-     * @dataProvider hasRegionData
-     */
+    #[DataProvider('hasRegionData')]
     public function testHasRegion(string $code, bool $expected): void
     {
         $language = Language::get($code);
@@ -50,7 +49,7 @@ class TranslationTest extends TestCase
     /**
      * @return iterable<string, array{string, bool}>
      */
-    public function hasRegionData(): iterable
+    public static function hasRegionData(): iterable
     {
         yield 'Language only' => ['de', false];
         yield 'With region' => ['de-CH', true];

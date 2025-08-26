@@ -4,14 +4,13 @@
     bootstrap="vendor/autoload.php"
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"
-    verbose="true"
 >
     <testsuite name="Eventjet\I18n">
         <directory>tests/unit</directory>
     </testsuite>
-    <coverage>
+    <source>
         <include>
             <directory>src</directory>
         </include>
-    </coverage>
+    </source>
 </phpunit>

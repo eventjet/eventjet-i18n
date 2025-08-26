@@ -8,6 +8,8 @@ use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\NativeIcuTranslator;
 use Eventjet\I18n\Translate\TestTranslator;
+use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -21,8 +23,8 @@ final class NativeIcuTranslatorTest extends TestCase
     /**
      * @param array<string, array<string, string>> $translations
      * @param array<string, mixed> $arguments
-     * @dataProvider translateCases
      */
+    #[DataProvider('translateCases')]
     public function testTranslate(
         array $translations,
         string $messageId,
@@ -50,7 +52,7 @@ final class NativeIcuTranslatorTest extends TestCase
      *     string|null,
      * }>
      */
-    public function translateCases(): iterable
+    public static function translateCases(): iterable
     {
         yield 'No arguments' => [
             ['my-message' => ['de' => 'Die Übersetzung']],
@@ -130,6 +132,7 @@ final class NativeIcuTranslatorTest extends TestCase
         self::assertLessThan(1, $end - $start);
     }
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

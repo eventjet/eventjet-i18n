@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Language;
 
 use InvalidArgumentException;
+use Override;
 use RuntimeException;
 
 use function assert;
@@ -39,12 +40,14 @@ class LanguagePriority implements LanguagePriorityInterface
      */
     public static function fromLocale(string $locale): self
     {
+        /** @phpstan-ignore-next-line possiblyImpure.new */
         return new self([Language::get($locale)]);
     }
 
     /**
      * @return list<LanguageInterface>
      */
+    #[Override]
     public function getAll(): array
     {
         return $this->languages;
@@ -54,6 +57,7 @@ class LanguagePriority implements LanguagePriorityInterface
      * @psalm-mutation-free
      * @psalm-allow-private-mutation
      */
+    #[Override]
     public function current(): LanguageInterface
     {
         $current = current($this->languages);
@@ -66,11 +70,18 @@ class LanguagePriority implements LanguagePriorityInterface
     /**
      * @psalm-external-mutation-free
      */
+    #[Override]
     public function next(): void
     {
+        /**
+         * I don't know why external-mutation-free isn't working
+         * @psalm-suppress InaccessibleProperty
+         * @phpstan-ignore-next-line argument.byRef
+         */
         next($this->languages);
     }
 
+    #[Override]
     public function key(): int
     {
         $key = key($this->languages);
@@ -78,6 +89,7 @@ class LanguagePriority implements LanguagePriorityInterface
         return $key;
     }
 
+    #[Override]
     public function valid(): bool
     {
         $key = key($this->languages);
@@ -87,18 +99,23 @@ class LanguagePriority implements LanguagePriorityInterface
     /**
      * @psalm-external-mutation-free
      */
+    #[Override]
     public function rewind(): void
     {
+        /**
+         * I don't know why external-mutation-free isn't working
+         * @psalm-suppress InaccessibleProperty
+         * @phpstan-ignore-next-line argument.byRef
+         */
         reset($this->languages);
     }
 
     /**
      * @return LanguageInterface
      */
+    #[Override]
     public function primary()
     {
-        $primary = reset($this->languages);
-        assert($primary !== false);
-        return $primary;
+        return $this->languages[0];
     }
 }

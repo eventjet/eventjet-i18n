@@ -6,18 +6,17 @@ namespace EventjetTest\I18n\Language;
 
 use Eventjet\I18n\Exception\InvalidLanguageFormatException;
 use Eventjet\I18n\Language\Language;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class LanguageTest extends TestCase
+final class LanguageTest extends TestCase
 {
     public function testGetReturnsTheSameInstanceForTheSameString(): void
     {
         self::assertSame(Language::get('de'), Language::get('de'));
     }
 
-    /**
-     * @dataProvider invalidLanguageFormats
-     */
+    #[DataProvider('invalidLanguageFormats')]
     public function testInvalidLanguageThrowsException(string $language): void
     {
         $this->expectException(InvalidLanguageFormatException::class);
@@ -25,9 +24,7 @@ class LanguageTest extends TestCase
         $_language = Language::get($language);
     }
 
-    /**
-     * @dataProvider validLanguageFormats
-     */
+    #[DataProvider('validLanguageFormats')]
     public function testValidLanguage(string $language): void
     {
         $this->expectNotToPerformAssertions();
@@ -35,17 +32,13 @@ class LanguageTest extends TestCase
         $_language = Language::get($language);
     }
 
-    /**
-     * @dataProvider validLanguageFormats
-     */
+    #[DataProvider('validLanguageFormats')]
     public function testIsValid(string $language): void
     {
         self::assertTrue(Language::isValid($language));
     }
 
-    /**
-     * @dataProvider invalidLanguageFormats
-     */
+    #[DataProvider('invalidLanguageFormats')]
     public function testIsInvalid(string $language): void
     {
         self::assertFalse(Language::isValid($language));
@@ -54,7 +47,7 @@ class LanguageTest extends TestCase
     /**
      * @return array<array<string>>
      */
-    public function invalidLanguageFormats(): array
+    public static function invalidLanguageFormats(): array
     {
         return [['DE'], ['de_DE'], ['deu'], ['']];
     }
@@ -62,7 +55,7 @@ class LanguageTest extends TestCase
     /**
      * @return array<array<string>>
      */
-    public function validLanguageFormats(): array
+    public static function validLanguageFormats(): array
     {
         return [['de'], ['en-UK']];
     }

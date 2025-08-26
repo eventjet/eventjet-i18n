@@ -6,6 +6,9 @@ namespace Eventjet\I18n\Exception;
 
 use UnexpectedValueException;
 
+/**
+ * @final
+ */
 class InvalidLanguageFormatException extends UnexpectedValueException
 {
 }

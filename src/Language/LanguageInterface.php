@@ -22,6 +22,7 @@ interface LanguageInterface
 
     /**
      * @return string
+     * @psalm-pure
      */
     public function __toString();
 }

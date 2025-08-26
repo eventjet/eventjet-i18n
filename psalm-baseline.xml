@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.1.1@16bfbd9224698bd738c665f33039fade2a1a3977">
+<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
   <file src="src/Language/LanguagePrioriry.php">
-    <InvalidExtendClass occurrences="1">
-      <code>LanguagePriority</code>
+    <InvalidExtendClass>
+      <code><![CDATA[LanguagePriority]]></code>
     </InvalidExtendClass>
-  </file>
-  <file src="src/Translate/Translation.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>is_string($string)</code>
-    </DocblockTypeContradiction>
-  </file>
-  <file src="tests/unit/Translate/TranslationTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>true</code>
-    </InvalidScalarArgument>
   </file>
 </files>

@@ -7,6 +7,7 @@ namespace Eventjet\I18n\Translate;
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use Eventjet\I18n\Language\LanguagePriorityInterface;
+use Override;
 
 use function assert;
 use function current;
@@ -15,12 +16,14 @@ use function reset;
 /**
  * @deprecated use {@see TranslationMap::pick} instead
  * @psalm-immutable
+ * @final
  */
 class TranslationExtractor implements TranslationExtractorInterface
 {
     /**
      * @return string
      */
+    #[Override]
     public function extract(TranslationMapInterface $map, LanguagePriorityInterface $priorities)
     {
         $string = $this->extractFromPriority($map, $priorities);

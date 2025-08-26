@@ -6,6 +6,7 @@ namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguagePriorityInterface;
 use LogicException;
+use Override;
 
 use function sprintf;
 use function str_replace;
@@ -27,6 +28,7 @@ final class TestTranslator implements TranslatorInterface
     private array $translations = [];
     private bool $strict = true;
 
+    #[Override]
     public function translate(string $message, LanguagePriorityInterface $languages): string
     {
         $primaryLocale = (string)$languages->primary();

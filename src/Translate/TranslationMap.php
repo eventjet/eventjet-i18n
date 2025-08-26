@@ -10,6 +10,7 @@ use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use InvalidArgumentException;
+use Override;
 
 use function array_map;
 use function assert;
@@ -24,9 +25,8 @@ use function trim;
  */
 class TranslationMap implements TranslationMapInterface
 {
-    private static ?TranslationMapFactory $factory = null;
     /** @var array<string, Translation> */
-    private array $translations = [];
+    private array $translations;
 
     /**
      * @param array<array-key, Translation> $translations
@@ -36,9 +36,11 @@ class TranslationMap implements TranslationMapInterface
         if (count($translations) === 0) {
             throw new InvalidArgumentException('Empty translation maps are not allowed.');
         }
+        $keyed = [];
         foreach ($translations as $translation) {
-            $this->translations[(string)$translation->getLanguage()] = $translation;
+            $keyed[(string)$translation->getLanguage()] = $translation;
         }
+        $this->translations = $keyed;
     }
 
     /**
@@ -46,8 +48,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function create(array $mapData): self
     {
-        $factory = self::getFactory();
-        $map = $factory->create($mapData);
+        $map = (new TranslationMapFactory())->create($mapData);
         if ($map === null) {
             throw new InvalidTranslationMapDataException('Given translation map data is invalid');
         }
@@ -58,7 +59,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * Checks whether the given value can be used as an argument for {@see self::create()}.
      *
-     * @psalm-assert-if-true array<string, string> $mapData
+     * @psalm-assert-if-true array<literal-string, string> $mapData
      */
     public static function canCreate(mixed $mapData): bool
     {
@@ -67,7 +68,6 @@ class TranslationMap implements TranslationMapInterface
         }
         $filtered = [];
         /**
-         * @var mixed $lang
          * @var mixed $text
          */
         foreach ($mapData as $lang => $text) {
@@ -87,7 +87,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function deserialize(array $serialized): self
     {
-        $translations = array_map([self::class, 'deserializeTranslation'], $serialized);
+        $translations = array_map(self::deserializeTranslation(...), $serialized);
         return new self($translations);
     }
 
@@ -97,16 +97,6 @@ class TranslationMap implements TranslationMapInterface
     private static function deserializeTranslation(array $translationData): Translation
     {
         return Translation::deserialize($translationData);
-    }
-
-    private static function getFactory(): TranslationMapFactory
-    {
-        if (self::$factory !== null) {
-            return self::$factory;
-        }
-        $factory = new TranslationMapFactory();
-        self::$factory = $factory;
-        return $factory;
     }
 
     /**
@@ -123,12 +113,14 @@ class TranslationMap implements TranslationMapInterface
      */
     private static function serializeTranslation(Translation $translation): array
     {
+        /** @phpstan-ignore-next-line possiblyImpure.methodCall */
         return $translation->serialize();
     }
 
     /**
      * @return bool
      */
+    #[Override]
     public function has(LanguageInterface $language)
     {
         return isset($this->translations[(string)$language]);
@@ -137,6 +129,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return string|null
      */
+    #[Override]
     public function get(LanguageInterface $language)
     {
         if (!isset($this->translations[(string)$language])) {
@@ -148,6 +141,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, Translation>
      */
+    #[Override]
     public function getAll()
     {
         return $this->translations;
@@ -156,17 +150,19 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return TranslationMapInterface
      */
+    #[Override]
     public function withTranslation(TranslationInterface $translation)
     {
-        $newMap = clone $this;
         assert($translation instanceof Translation);
-        $newMap->translations[(string)$translation->getLanguage()] = $translation;
-        return $newMap;
+        $translations = $this->translations;
+        $translations[(string)$translation->getLanguage()] = $translation;
+        return new self($translations);
     }
 
     /**
      * @return array<string, string>
      */
+    #[Override]
     public function jsonSerialize(): array
     {
         $json = [];
@@ -179,6 +175,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return bool
      */
+    #[Override]
     public function equals(TranslationMapInterface $other)
     {
         if ($this === $other) {
@@ -215,15 +212,13 @@ class TranslationMap implements TranslationMapInterface
      */
     public function withEachModified(callable $modifier): self
     {
-        $modified = clone $this;
         $translations = [];
         foreach ($this->translations as $key => $translation) {
             $language = $translation->getLanguage();
             assert($language instanceof Language);
             $translations[$key] = new Translation($language, $modifier($translation->getText(), $language));
         }
-        $modified->translations = $translations;
-        return $modified;
+        return new self($translations);
     }
 
     public function pick(LanguagePriority $languages): string
