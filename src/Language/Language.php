@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Eventjet\I18n\Language;
 
 use Eventjet\I18n\Exception\InvalidLanguageFormatException;
+use Override;
 
 use function preg_match;
 use function sprintf;
@@ -17,9 +18,9 @@ use function substr;
  */
 class Language implements LanguageInterface
 {
-    /** @var array<string, Language> */
-    private static array $pool = [];
+    /** @readonly */
     private string $language;
+    /** @readonly */
     private bool $hasRegion;
 
     /**
@@ -37,9 +38,11 @@ class Language implements LanguageInterface
     /**
      * @param string $language
      * @return bool
+     * @psalm-pure
      */
     public static function isValid($language)
     {
+        /** @phpstan-ignore-next-line possiblyImpure.functionCall */
         return preg_match('/^([a-z]{2}(-[A-Z]{2})?)$/', $language) === 1;
     }
 
@@ -47,6 +50,7 @@ class Language implements LanguageInterface
      * @return bool
      * @psalm-allow-private-mutation
      */
+    #[Override]
     public function hasRegion()
     {
         return $this->hasRegion;
@@ -55,6 +59,7 @@ class Language implements LanguageInterface
     /**
      * @return Language
      */
+    #[Override]
     public function getBaseLanguage()
     {
         return self::get(substr($this->language, 0, 2));
@@ -65,13 +70,18 @@ class Language implements LanguageInterface
      * @return Language
      * @psalm-pure
      * @psalm-suppress ImpureStaticProperty It's fine
+     * @psalm-external-mutation-free
      */
     public static function get($language)
     {
-        if (!isset(self::$pool[$language])) {
-            self::$pool[$language] = new self($language);
-        }
-        return self::$pool[$language];
+        /**
+         * @var array<string, self> $pool
+         * @psalm-suppress ImpureStaticVariable
+         * @phpstan-ignore-next-line impure.static
+         */
+        static $pool = [];
+        /** @phpstan-ignore-next-line possiblyImpure.new */
+        return $pool[$language] ??= new self($language);
     }
 
     /**

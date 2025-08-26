@@ -9,17 +9,17 @@ use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\Translation;
 use Eventjet\I18n\Translate\TranslationExtractor;
 use Eventjet\I18n\Translate\TranslationMap;
+use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
 
-class TranslationExtractorTest extends TestCase
+final class TranslationExtractorTest extends TestCase
 {
     private TranslationExtractor $languageExtractor;
 
-    /**
-     * @dataProvider extractData
-     */
+    #[DataProvider('extractData')]
     public function testExtract(
         TranslationMap $map,
         LanguagePriority $priority,
@@ -31,7 +31,7 @@ class TranslationExtractorTest extends TestCase
     /**
      * @return list<array{TranslationMap, LanguagePriority, string}>
      */
-    public function extractData(): array
+    public static function extractData(): array
     {
         $data = [
             [['de' => 'Deutsch'], ['de'], 'Deutsch'],
@@ -41,23 +41,22 @@ class TranslationExtractorTest extends TestCase
             [['de' => 'Deutsch', 'en' => 'English'], ['es'], 'English'],
             [['de' => 'Deutsch'], ['es'], 'Deutsch'],
         ];
-        $data = array_map(
+        return array_map(
             function (array $item) {
                 return [
-                    $this->createTranslationMap($item[0]),
-                    $this->createPriority($item[1]),
+                    self::createTranslationMap($item[0]),
+                    self::createPriority($item[1]),
                     $item[2],
                 ];
             },
             $data
         );
-        return $data;
     }
 
     /**
      * @param array<string, string> $mapData
      */
-    private function createTranslationMap(array $mapData): TranslationMap
+    private static function createTranslationMap(array $mapData): TranslationMap
     {
         $translations = [];
         foreach ($mapData as $language => $string) {
@@ -69,13 +68,14 @@ class TranslationExtractorTest extends TestCase
     /**
      * @param list<string> $priorityData
      */
-    private function createPriority(array $priorityData): LanguagePriority
+    private static function createPriority(array $priorityData): LanguagePriority
     {
         return new LanguagePriority(
             array_map(static fn(string $language): Language => Language::get($language), $priorityData)
         );
     }
 
+    #[Override]
     protected function setUp(): void
     {
         $this->languageExtractor = new TranslationExtractor();

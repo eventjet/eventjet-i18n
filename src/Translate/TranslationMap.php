@@ -10,6 +10,7 @@ use Eventjet\I18n\Language\LanguagePriority;
 use Eventjet\I18n\Translate\Exception\InvalidTranslationMapDataException;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
 use InvalidArgumentException;
+use Override;
 use SplFixedArray;
 
 use function array_map;
@@ -25,6 +26,7 @@ use function trim;
  */
 class TranslationMap implements TranslationMapInterface
 {
+    /** @phpstan-ignore-next-line property.readOnlyByPhpDocDefaultValue */
     private static ?TranslationMapFactory $factory = null;
     /** @var SplFixedArray<string> */
     private SplFixedArray $locales;
@@ -61,8 +63,8 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function create(array $mapData): self
     {
-        $factory = self::getFactory();
-        $map = $factory->create($mapData);
+        /** @infection-ignore-all Performance (time/space) optimization */
+        $map = (self::$factory ??= new TranslationMapFactory())->create($mapData);
         if ($map === null) {
             throw new InvalidTranslationMapDataException('Given translation map data is invalid');
         }
@@ -73,7 +75,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * Checks whether the given value can be used as an argument for {@see self::create()}.
      *
-     * @psalm-assert-if-true array<string, string> $mapData
+     * @psalm-assert-if-true array<literal-string, string> $mapData
      */
     public static function canCreate(mixed $mapData): bool
     {
@@ -82,7 +84,6 @@ class TranslationMap implements TranslationMapInterface
         }
         $filtered = [];
         /**
-         * @var mixed $lang
          * @var mixed $text
          */
         foreach ($mapData as $lang => $text) {
@@ -102,7 +103,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function deserialize(array $serialized): self
     {
-        $translations = array_map([self::class, 'deserializeTranslation'], $serialized);
+        $translations = array_map(self::deserializeTranslation(...), $serialized);
         return new self($translations);
     }
 
@@ -112,16 +113,6 @@ class TranslationMap implements TranslationMapInterface
     private static function deserializeTranslation(array $translationData): Translation
     {
         return Translation::deserialize($translationData);
-    }
-
-    private static function getFactory(): TranslationMapFactory
-    {
-        if (self::$factory !== null) {
-            return self::$factory;
-        }
-        $factory = new TranslationMapFactory();
-        self::$factory = $factory;
-        return $factory;
     }
 
     /**
@@ -138,12 +129,14 @@ class TranslationMap implements TranslationMapInterface
      */
     private static function serializeTranslation(Translation $translation): array
     {
+        /** @phpstan-ignore-next-line possiblyImpure.methodCall */
         return $translation->serialize();
     }
 
     /**
      * @return bool
      */
+    #[Override]
     public function has(LanguageInterface $language)
     {
         return isset($this->toLegacyStructure()[(string)$language]);
@@ -152,6 +145,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return string|null
      */
+    #[Override]
     public function get(LanguageInterface $language)
     {
         if (!isset($this->toLegacyStructure()[(string)$language])) {
@@ -163,6 +157,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, Translation>
      */
+    #[Override]
     public function getAll()
     {
         return $this->toLegacyStructure();
@@ -171,6 +166,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return TranslationMapInterface
      */
+    #[Override]
     public function withTranslation(TranslationInterface $translation)
     {
         $translation = new Translation($translation->getLanguage(), $translation->getText());
@@ -180,6 +176,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return array<string, string>
      */
+    #[Override]
     public function jsonSerialize(): array
     {
         $json = [];
@@ -192,6 +189,7 @@ class TranslationMap implements TranslationMapInterface
     /**
      * @return bool
      */
+    #[Override]
     public function equals(TranslationMapInterface $other)
     {
         if ($this === $other) {

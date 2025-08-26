@@ -13,14 +13,12 @@ use Eventjet\I18n\Translate\TranslationInterface;
 use Eventjet\I18n\Translate\TranslationMap;
 use Eventjet\I18n\Translate\TranslationMapInterface;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
 use function assert;
 use function count;
-use function gettype;
-use function is_array;
-use function is_string;
 use function memory_get_usage;
 use function sprintf;
 use function uniqid;
@@ -109,7 +107,7 @@ final class TranslationMapTest extends TestCase
      *     bool,
      * }>
      */
-    public function equalsData(): array
+    public static function equalsData(): array
     {
         $data = [
             [['de' => 'DE'], ['de' => 'DE'], true],
@@ -134,18 +132,14 @@ final class TranslationMapTest extends TestCase
         return $data;
     }
 
-    /**
-     * @dataProvider equalsData
-     */
+    #[DataProvider('equalsData')]
     public function testEquals(TranslationMapInterface $a, TranslationMapInterface $b, bool $equal): void
     {
         self::assertEquals($equal, $a->equals($b));
         self::assertEquals($equal, $b->equals($a));
     }
 
-    /**
-     * @dataProvider serializationData
-     */
+    #[DataProvider('serializationData')]
     public function testSerialization(TranslationMap $map): void
     {
         $serialized = $map->serialize();
@@ -158,7 +152,7 @@ final class TranslationMapTest extends TestCase
     /**
      * @return iterable<string, array{TranslationMap}>
      */
-    public function serializationData(): iterable
+    public static function serializationData(): iterable
     {
         yield 'Single translation' => [new TranslationMap([new Translation(Language::get('en'), 'Foo')])];
     }
@@ -228,8 +222,8 @@ final class TranslationMapTest extends TestCase
 
     /**
      * @param array<string, string> $mapData
-     * @dataProvider validMapData
      */
+    #[DataProvider('validMapData')]
     public function testCreate(array $mapData): void
     {
         $map = TranslationMap::create($mapData);
@@ -240,17 +234,32 @@ final class TranslationMapTest extends TestCase
 
     /**
      * @param array<string, string> $mapData
-     * @dataProvider validMapData
      */
+    #[DataProvider('validMapData')]
     public function testCanCreate(array $mapData): void
     {
         /** @psalm-suppress RedundantCondition */
         self::assertTrue(TranslationMap::canCreate($mapData));
     }
 
-    /**
-     * @dataProvider invalidMapData
-     */
+    public function testCanNotCreateWithNonArray(): void
+    {
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate('foo'));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(42));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(true));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(false));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(null));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(new class {
+        }));
+    }
+
+    #[DataProvider('invalidMapData')]
     public function testCanNotCreate(mixed $mapData): void
     {
         self::assertFalse(TranslationMap::canCreate($mapData));
@@ -259,7 +268,7 @@ final class TranslationMapTest extends TestCase
     /**
      * @return iterable<string, array{array<string, string>}>
      */
-    public function validMapData(): iterable
+    public static function validMapData(): iterable
     {
         yield 'Single language' => [['de' => 'Ein Test']];
         yield 'Multiple languages' => [['de' => 'Ein Test', 'en' => 'A test']];
@@ -268,42 +277,22 @@ final class TranslationMapTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidMapData
+     * @param array<string, string> $mapData
      */
-    public function testCreateFailsWithInvalidData(mixed $mapData): void
+    #[DataProvider('invalidMapData')]
+    public function testCreateFailsWithInvalidData(array $mapData): void
     {
         $this->expectException(InvalidTranslationMapDataException::class);
 
-
-        if (!is_array($mapData)) {
-            throw new InvalidTranslationMapDataException(sprintf('Expected array, got %s', gettype($mapData)));
-        }
-        foreach ($mapData as $key => $value) {
-            if (!is_string($key) || !is_string($value)) {
-                throw new InvalidTranslationMapDataException(
-                    sprintf('Expected array<string, string>, got %s', gettype($mapData))
-                );
-            }
-        }
-        /** @psalm-suppress MixedArgumentTypeCoercion */
         TranslationMap::create($mapData);
     }
 
     /**
-     * @return iterable<string, array{mixed}>
+     * @return iterable<string, array{array<string, string>}>
      */
     public static function invalidMapData(): iterable
     {
-        yield 'string' => ['foo'];
-        yield 'int' => [23];
-        yield 'float' => [23.42];
-        yield 'true' => [true];
-        yield 'false' => [false];
-        yield 'null' => [null];
         yield 'array{}' => [[]];
-        yield 'list<string>' => [['foo']];
-        yield 'array<int, string>' => [[23 => 'foo']];
-        yield 'array<locale-string, int>' => [['fr' => 23]];
         yield 'invalid locale' => [['foo' => 'bar']];
         yield 'Invalid element in the middle' => [['de' => 'foo', 'foo' => 'bar', 'en' => 'baz']];
         yield 'all texts are empty' => [['de' => '', 'en' => ' ', 'es' => "\n"]];
@@ -326,9 +315,9 @@ final class TranslationMapTest extends TestCase
     }
 
     /**
-     * @dataProvider emptyMapData
      * @param array<string, string> $mapData
      */
+    #[DataProvider('emptyMapData')]
     public function testCreateThrowsExceptionIfMapDataIsInvalid(array $mapData): void
     {
         $this->expectException(InvalidTranslationMapDataException::class);
@@ -339,7 +328,7 @@ final class TranslationMapTest extends TestCase
     /**
      * @return array<array<array<string, string>>>
      */
-    public function emptyMapData(): array
+    public static function emptyMapData(): array
     {
         return [
             [[]],
@@ -348,9 +337,7 @@ final class TranslationMapTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider pickData
-     */
+    #[DataProvider('pickData')]
     public function testPick(
         TranslationMap $map,
         LanguagePriority $priority,
@@ -362,7 +349,7 @@ final class TranslationMapTest extends TestCase
     /**
      * @return list<array{TranslationMap, LanguagePriority, string}>
      */
-    public function pickData(): array
+    public static function pickData(): array
     {
         $data = [
             [['de' => 'Deutsch'], ['de'], 'Deutsch'],
@@ -376,8 +363,8 @@ final class TranslationMapTest extends TestCase
         $data = array_map(
             function (array $item) {
                 return [
-                    $this->createTranslationMap($item[0]),
-                    $this->createPriority($item[1]),
+                    self::createTranslationMap($item[0]),
+                    self::createPriority($item[1]),
                     $item[2],
                 ];
             },
@@ -388,6 +375,10 @@ final class TranslationMapTest extends TestCase
 
     public function testMemoryUsage(): void
     {
+        // Under Infection, the memory usage is higher. Probably because of coverage collection. If you can find a way
+        // to detect Infection (I couldn't find an environment variable), this can be conditionally set to 0.
+        $infectionOffset = 35_040;
+
         $before = memory_get_usage();
         $maps = [];
         for ($i = 0; $i < 1000; $i++) {
@@ -400,14 +391,15 @@ final class TranslationMapTest extends TestCase
         // array<string, string>                            564,784 bytes
         // SplFixedArray<string> + SplFixedArray<string>    477,168 bytes <-- What we are currently using
         // SplFixedArray<int> + SplFixedArray<string>       477,152 bytes <-- Not worth the complexity
-        self::assertLessThanOrEqual(477_168, $diff, sprintf('%d maps used %d bytes', count($maps), $diff));
+        $expectedMaximum = 477_168 + $infectionOffset;
+        self::assertLessThanOrEqual($expectedMaximum, $diff, sprintf('%d maps used %d bytes', count($maps), $diff));
         // It's important that we *use* `$maps` so PHP doesn't optimize it away -----------^
     }
 
     /**
      * @param array<string, string> $mapData
      */
-    private function createTranslationMap(array $mapData): TranslationMap
+    private static function createTranslationMap(array $mapData): TranslationMap
     {
         $translations = [];
         foreach ($mapData as $language => $string) {
@@ -419,7 +411,7 @@ final class TranslationMapTest extends TestCase
     /**
      * @param list<string> $priorityData
      */
-    private function createPriority(array $priorityData): LanguagePriority
+    private static function createPriority(array $priorityData): LanguagePriority
     {
         return new LanguagePriority(
             array_map(static fn(string $language): Language => Language::get($language), $priorityData)

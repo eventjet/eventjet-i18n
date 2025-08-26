@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class LanguagePriorityTest extends TestCase
+final class LanguagePriorityTest extends TestCase
 {
     public function testGetAllReturnsAllLanguages(): void
     {
@@ -27,6 +27,7 @@ class LanguagePriorityTest extends TestCase
     public function testNoLanguages(): void
     {
         $this->expectException(InvalidArgumentException::class);
+
         new LanguagePriority([]);
     }
 

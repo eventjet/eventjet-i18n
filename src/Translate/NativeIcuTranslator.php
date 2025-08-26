@@ -6,6 +6,7 @@ namespace Eventjet\I18n\Translate;
 
 use Eventjet\I18n\Language\LanguagePriority;
 use MessageFormatter;
+use Override;
 use Throwable;
 
 use function assert;
@@ -35,6 +36,7 @@ final class NativeIcuTranslator implements IcuTranslatorInterface
         return $formatter;
     }
 
+    #[Override]
     public function translate(string $messageId, LanguagePriority $languages, array $arguments): ?string
     {
         try {

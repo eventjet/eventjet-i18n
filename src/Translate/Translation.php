@@ -7,6 +7,7 @@ namespace Eventjet\I18n\Translate;
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Language\LanguageInterface;
 use InvalidArgumentException;
+use Override;
 
 use function gettype;
 use function is_string;
@@ -23,10 +24,7 @@ class Translation implements TranslationInterface
     private LanguageInterface $language;
     private string $text;
 
-    /**
-     * @param string $string
-     */
-    public function __construct(LanguageInterface $language, $string)
+    public function __construct(LanguageInterface $language, mixed $string)
     {
         if (!is_string($string)) {
             throw new InvalidArgumentException(
@@ -52,6 +50,7 @@ class Translation implements TranslationInterface
     /**
      * @return LanguageInterface
      */
+    #[Override]
     public function getLanguage()
     {
         return $this->language;
@@ -60,6 +59,7 @@ class Translation implements TranslationInterface
     /**
      * @return string
      */
+    #[Override]
     public function getText()
     {
         return $this->text;

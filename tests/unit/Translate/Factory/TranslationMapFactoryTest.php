@@ -6,13 +6,16 @@ namespace EventjetTest\I18n\Translate\Factory;
 
 use Eventjet\I18n\Language\Language;
 use Eventjet\I18n\Translate\Factory\TranslationMapFactory;
+use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class TranslationMapFactoryTest extends TestCase
+final class TranslationMapFactoryTest extends TestCase
 {
     /** @var TranslationMapFactory */
     private $factory;
 
+    #[Override]
     protected function setUp(): void
     {
         $this->factory = new TranslationMapFactory();
@@ -20,8 +23,8 @@ class TranslationMapFactoryTest extends TestCase
 
     /**
      * @param array<string, string> $mapData
-     * @dataProvider validMapData
      */
+    #[DataProvider('validMapData')]
     public function testCreate(array $mapData): void
     {
         $map = $this->factory->create($mapData);
@@ -32,17 +35,13 @@ class TranslationMapFactoryTest extends TestCase
     }
 
     /**
-     * @return array<array<array<string, string>>>
+     * @return iterable<int, array{array<string, string>}>
      */
-    public function validMapData(): array
+    public static function validMapData(): iterable
     {
-        return [
-            [
-                ['de' => 'Ein Test'],
-                ['de' => 'Ein Test', 'en' => 'A test'],
-                ['en' => 'A test', 'de' => 'Ein Test'],
-            ],
-        ];
+        yield [['de' => 'Ein Test']];
+        yield [['de' => 'Ein Test', 'en' => 'A test']];
+        yield [['en' => 'A test', 'de' => 'Ein Test']];
     }
 
     public function testTextsAreTrimmed(): void
@@ -62,9 +61,9 @@ class TranslationMapFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider emptyMapData
      * @param array<string, string> $mapData
      */
+    #[DataProvider('emptyMapData')]
     public function testCreateReturnsNullifMapDataIsEmpty(array $mapData): void
     {
         $translationMap = $this->factory->create($mapData);
@@ -75,7 +74,7 @@ class TranslationMapFactoryTest extends TestCase
     /**
      * @return array<array<array<string, string>>>
      */
-    public function emptyMapData(): array
+    public static function emptyMapData(): array
     {
         return [
             [[]],
