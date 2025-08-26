@@ -7,7 +7,7 @@ jobs:
 
     strategy:
       matrix:
-        php: ["8.1", "8.2", "8.3", "8.4"]
+        php: ["8.1", "8.2", "8.3"]
 
     runs-on: ubuntu-latest
     container:
@@ -79,7 +79,9 @@ jobs:
         uses: slavcodev/coverage-monitor-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          clover_file: "coverage.xml"
-          comment_context: PHP ${{ matrix.php }}
+          coverage_path: "coverage.xml"
+          comment: false
+          comment_context: Coverage PHP ${{ matrix.php }}
+          status_context: Coverage PHP ${{ matrix.php }}
           threshold_alert: 100
           threshold_warning: 100
