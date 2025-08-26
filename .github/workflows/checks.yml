@@ -7,7 +7,7 @@ jobs:
 
     strategy:
       matrix:
-        php: ["8.1", "8.2"]
+        php: ["8.1", "8.2", "8.3", "8.4"]
 
     runs-on: ubuntu-latest
     container:
@@ -15,18 +15,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: Prepare environment
         run: |
           mkdir -p /root/.ssh
           ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
           echo "COMPOSER_CACHE=$(composer config cache-dir)" >> $GITHUB_ENV
-          git fetch origin $GITHUB_BASE_REF $GITHUB_HEAD_REF
-          echo "GIT_ADDED_FILES="$(git diff --name-only --diff-filter=A origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF | grep 'src\/')"" >> $GITHUB_ENV
 
       - name: Composer Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.COMPOSER_CACHE }}
@@ -37,34 +35,44 @@ jobs:
         run: |
           composer update --no-progress --no-interaction ${{ matrix.composer_args }} > /dev/null
 
-      - name: Static analysis
-        run: |
-          composer check-deps
-          composer cs-check
-          composer phpstan -- --no-progress
-          composer psalm
+      - name: Check Dependencies
+        run: composer check-deps
 
-      - name: Infection coverage of added files
-        if: env.GIT_ADDED_FILES != '' && !contains(github.event.pull_request.labels.*.name, 'skip-infection-diff')
+      - name: Check Code Style
+        run: PHP_CS_FIXER_IGNORE_ENV=1 composer cs-check
+
+      - name: PHPStan
+        run: composer phpstan -- --no-progress
+
+      - name: Psalm
+        run: composer psalm
+
+      - name: Possibly allow infection to fail
+        if: "contains(github.event.pull_request.labels.*.name, 'skip-infection')"
+        run: echo "IGNORE_INFECTION=true" >> $GITHUB_ENV
+
+      - name: Infection coverage of changed lines
         run: |
-          vendor/bin/infection \
+          git fetch origin $GITHUB_BASE_REF $GITHUB_HEAD_REF
+          composer run --timeout=0 infection -- \
             --git-diff-base=origin/$GITHUB_BASE_REF \
-            --git-diff-filter=A \
+            --git-diff-lines \
             --logger-github \
             --min-msi=100 \
-            --min-covered-msi=100
-
-      - name: Tests
-        run: |
-          vendor/bin/phpunit --coverage-clover=coverage.xml --stop-on-failure
-          composer run --timeout=0 infection
+            --min-covered-msi=100 \
+            --ignore-msi-with-no-mutations \
+            -jmax \
+            || "${{ env.IGNORE_INFECTION == 'true' }}"
 
       - name: Save Infection result
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: infection-log-${{ matrix.php }}.txt
           path: infection-log.txt
+
+      - name: PHPUnit
+        run: composer run --timeout=0 phpunit -- --coverage-clover=coverage.xml --stop-on-failure
 
       - name: Monitor coverage
         if: github.event_name == 'pull_request'
