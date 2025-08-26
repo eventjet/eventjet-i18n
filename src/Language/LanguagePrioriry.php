@@ -10,6 +10,7 @@ namespace Eventjet\I18n\Language;
  * @deprecated
  * @psalm-immutable
  * @final
+ * @psalm-suppress UnusedClass
  * @phpstan-ignore-next-line class.extendsFinalByPhpDoc
  */
 class LanguagePrioriry extends LanguagePriority
