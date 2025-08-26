@@ -11,8 +11,6 @@ use LogicException;
 use Override;
 use PHPUnit\Framework\TestCase;
 
-use function implode;
-
 final class TestTranslatorTest extends TestCase
 {
     private TestTranslator $translator;
@@ -24,11 +22,9 @@ final class TestTranslatorTest extends TestCase
         $this->translator->add('bar', 'de', 'Bar, De');
 
         $this->expectException(LogicException::class);
-        $expectedMessage = implode('', [
-            'A translation of "bar" in "en" was requested, but no translation was added for this ',
-            'combination. Use $translator->add(\'bar\', \'en\', \'Your translation\') to add one or ',
-            '$translator->setLenient() to enable lenient mode and make this error go away.',
-        ]);
+        $expectedMessage = 'A translation of "bar" in "en" was requested, but no translation was added for this ';
+        $expectedMessage .= 'combination. Use $translator->add(\'bar\', \'en\', \'Your translation\') to add one or ';
+        $expectedMessage .= '$translator->setLenient() to enable lenient mode and make this error go away.';
         $this->expectExceptionMessage($expectedMessage);
 
         $this->translator->translate('bar', new LanguagePriority([Language::get('en')]));

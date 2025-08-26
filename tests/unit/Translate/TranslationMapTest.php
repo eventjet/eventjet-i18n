@@ -18,6 +18,10 @@ use PHPUnit\Framework\TestCase;
 
 use function array_map;
 use function assert;
+use function count;
+use function memory_get_usage;
+use function sprintf;
+use function uniqid;
 
 final class TranslationMapTest extends TestCase
 {
@@ -350,6 +354,24 @@ final class TranslationMapTest extends TestCase
             $data
         );
         return $data;
+    }
+
+    public function testMemoryUsage(): void
+    {
+        $before = memory_get_usage();
+        $maps = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $maps[] = TranslationMap::create(['en' => uniqid(), 'de' => uniqid()]);
+        }
+        $after = memory_get_usage();
+        $diff = $after - $before;
+
+        // array<string, Translation>                       741,168 bytes
+        // array<string, string>                            564,784 bytes
+        // SplFixedArray<string> + SplFixedArray<string>    477,168 bytes <-- What we are currently using
+        // SplFixedArray<int> + SplFixedArray<string>       477,152 bytes <-- Not worth the complexity
+        self::assertLessThanOrEqual(477_168, $diff, sprintf('%d maps used %d bytes', count($maps), $diff));
+        // It's important that we *use* `$maps` so PHP doesn't optimize it away -----------^
     }
 
     /**
