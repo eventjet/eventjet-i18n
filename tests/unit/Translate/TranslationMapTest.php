@@ -358,6 +358,10 @@ final class TranslationMapTest extends TestCase
 
     public function testMemoryUsage(): void
     {
+        // Under Infection, the memory usage is higher. Probably because of coverage collection. If you can find a way
+        // to detect Infection (I couldn't find an environment variable), this can be conditionally set to 0.
+        $infectionOffset = 35_040;
+
         $before = memory_get_usage();
         $maps = [];
         for ($i = 0; $i < 1000; $i++) {
@@ -370,7 +374,8 @@ final class TranslationMapTest extends TestCase
         // array<string, string>                            564,784 bytes
         // SplFixedArray<string> + SplFixedArray<string>    477,168 bytes <-- What we are currently using
         // SplFixedArray<int> + SplFixedArray<string>       477,152 bytes <-- Not worth the complexity
-        self::assertLessThanOrEqual(477_168, $diff, sprintf('%d maps used %d bytes', count($maps), $diff));
+        $expectedMaximum = 477_168 + $infectionOffset;
+        self::assertLessThanOrEqual($expectedMaximum, $diff, sprintf('%d maps used %d bytes', count($maps), $diff));
         // It's important that we *use* `$maps` so PHP doesn't optimize it away -----------^
     }
 
