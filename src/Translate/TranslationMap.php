@@ -63,6 +63,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function create(array $mapData): self
     {
+        /** @infection-ignore-all Performance (time/space) optimization */
         $map = (self::$factory ??= new TranslationMapFactory())->create($mapData);
         if ($map === null) {
             throw new InvalidTranslationMapDataException('Given translation map data is invalid');
