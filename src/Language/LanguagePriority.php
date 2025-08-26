@@ -69,6 +69,7 @@ final class LanguagePriority implements Iterator
      */
     public function next(): void
     {
+        /** @psalm-suppress InaccessibleProperty I don't know why external-mutation-free isn't working */
         next($this->languages);
     }
 
@@ -90,13 +91,12 @@ final class LanguagePriority implements Iterator
      */
     public function rewind(): void
     {
+        /** @psalm-suppress InaccessibleProperty I don't know why external-mutation-free isn't working */
         reset($this->languages);
     }
 
     public function primary(): Language
     {
-        /** @var Language $primary */
-        $primary = reset($this->languages);
-        return $primary;
+        return $this->languages[0];
     }
 }

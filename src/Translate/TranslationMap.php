@@ -95,7 +95,7 @@ final class TranslationMap implements JsonSerializable
      */
     public static function deserialize(array $serialized): self
     {
-        $translations = array_map([self::class, 'deserializeTranslation'], $serialized);
+        $translations = array_map(self::deserializeTranslation(...), $serialized);
         return new self($translations);
     }
 
