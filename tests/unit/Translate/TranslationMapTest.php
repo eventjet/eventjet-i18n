@@ -242,6 +242,23 @@ final class TranslationMapTest extends TestCase
         self::assertTrue(TranslationMap::canCreate($mapData));
     }
 
+    public function testCanNotCreateWithNonArray(): void
+    {
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate('foo'));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(42));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(true));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(false));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(null));
+        /** @phpstan-ignore-next-line staticMethod.impossibleType */
+        self::assertFalse(TranslationMap::canCreate(new class {
+        }));
+    }
+
     #[DataProvider('invalidMapData')]
     public function testCanNotCreate(mixed $mapData): void
     {
