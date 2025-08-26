@@ -26,6 +26,8 @@ use function trim;
  */
 class TranslationMap implements TranslationMapInterface
 {
+    /** @phpstan-ignore-next-line property.readOnlyByPhpDocDefaultValue */
+    private static ?TranslationMapFactory $factory = null;
     /** @var SplFixedArray<string> */
     private SplFixedArray $locales;
     /** @var SplFixedArray<string> */
@@ -61,7 +63,7 @@ class TranslationMap implements TranslationMapInterface
      */
     public static function create(array $mapData): self
     {
-        $map = (new TranslationMapFactory())->create($mapData);
+        $map = (self::$factory ??= new TranslationMapFactory())->create($mapData);
         if ($map === null) {
             throw new InvalidTranslationMapDataException('Given translation map data is invalid');
         }
